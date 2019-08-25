@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/fragment_container">
+        <EditText
+            android:id="@+id/editSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:layout_toLeftOf="@+id/btSearch" />
+
+        <Button
+            android:id="@+id/btSearch"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="4dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_search_black_24dp" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="610dp"
+        android:layout_above="@+id/layoutPlayMusic">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layoutPlayMusic"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_above="@+id/nav_view"
+        android:background="@color/cardview_light_background">
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/disk"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/nameSong" />
+
+        <TextView
+            android:id="@+id/nameSong"
+            android:layout_width="170dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:text="null"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/btPrevious" />
+
+        <Button
+            android:id="@+id/btPrevious"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btPlay"
+            android:background="@drawable/ic_skip_previous_black_24dp"/>
+
+        <Button
+            android:id="@+id/btPlay"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="8dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btNext"
+            android:background="@drawable/ic_play_black_24dp"/>
+
+        <Button
+            android:id="@+id/btNext"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="8dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_skip_next_black_24dp"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_nav_menu" />
+
+</RelativeLayout>
