@@ -16,8 +16,10 @@
 
     <SeekBar
         android:id="@+id/seekBarPlay"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="40dp"
+        app:layout_constraintLeft_toRightOf="@+id/tvTimeLive"
+        app:layout_constraintRight_toLeftOf="@+id/tvTotalTime"
         app:layout_constraintTop_toBottomOf="@+id/view"
         app:layout_constraintBottom_toTopOf="@+id/btPlay"
          />
