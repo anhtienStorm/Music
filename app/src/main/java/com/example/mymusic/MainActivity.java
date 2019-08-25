@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // xin cap quyen runtime
         initPermission();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);

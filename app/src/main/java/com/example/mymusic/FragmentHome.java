@@ -35,6 +35,8 @@ public class FragmentHome extends Fragment {
                 adapter.setSongs(songs);
             }
         });
+
+
         return view;
     }
 }

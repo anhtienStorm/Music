@@ -1,6 +1,7 @@
 package com.example.mymusic;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
 
     private LayoutInflater inflater;
     private List<Song> listSong;
+    ClickListenner clickListenner;
 
     SongListAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -52,7 +54,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
     }
 
     // class View Holder
-    class SongViewHolder extends RecyclerView.ViewHolder {
+    class SongViewHolder extends RecyclerView.ViewHolder implements ClickListenner {
 
         private final TextView tvNameSong;
 
@@ -60,8 +62,19 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
             super(itemView);
             tvNameSong = itemView.findViewById(R.id.tvNameSong);
         }
+
+        @Override
+        public void onClick(View view, int position) {
+            position = getAdapterPosition();
+        }
+    }
+
+    public void setOnClickListenner(ClickListenner clickListenner){
+        this.clickListenner = clickListenner;
     }
 
     //set onclick
-
+    private interface ClickListenner{
+        void onClick(View view, int position);
+    }
 }
