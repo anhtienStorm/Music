@@ -10,92 +10,83 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/seekBarPlay"
-         />
+        app:layout_constraintBottom_toTopOf="@+id/seekTime"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <SeekBar
-        android:id="@+id/seekBarPlay"
-        android:layout_width="350dp"
+    <LinearLayout
+        android:id="@+id/seekTime"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
-        app:layout_constraintLeft_toRightOf="@+id/tvTimeLive"
-        app:layout_constraintRight_toLeftOf="@+id/tvTotalTime"
-        app:layout_constraintTop_toBottomOf="@+id/view"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btPlay"
-         />
+        app:layout_constraintTop_toBottomOf="@+id/view">
 
+        <TextView
+            android:id="@+id/tvTimeLive"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="TimeLive" />
 
+        <SeekBar
+            android:id="@+id/seekBarPlay"
+            android:layout_width="300dp"
+            android:layout_height="40dp" />
 
-    <TextView
-        android:id="@+id/tvTimeLive"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="TextView"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/seekBarPlay"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintBottom_toTopOf="@+id/btPlay" />
+        <TextView
+            android:id="@+id/tvTotalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="TotalTime" />
 
-    <TextView
-        android:id="@+id/tvTotalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:text="TotalTime"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/seekBarPlay"
-        app:layout_constraintTop_toBottomOf="@+id/view"
-        app:layout_constraintBottom_toTopOf="@+id/btPlay"
-        />
+    </LinearLayout>
 
     <Button
         android:id="@+id/btPlay"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_play_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btPrevious"
         app:layout_constraintRight_toLeftOf="@+id/btNext"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarPlay"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
         android:id="@+id/btNext"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_skip_next_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btPlay"
         app:layout_constraintRight_toLeftOf="@+id/btRandom"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarPlay"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
         android:id="@+id/btPrevious"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_skip_previous_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btLoop"
         app:layout_constraintRight_toLeftOf="@+id/btPlay"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarPlay"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
         android:id="@+id/btLoop"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="Loop"
+        android:background="@drawable/ic_repeat_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btPrevious"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarPlay"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
         android:id="@+id/btRandom"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="Random"
+        android:background="@drawable/ic_shuffle_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btNext"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBarPlay"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 </androidx.constraintlayout.widget.ConstraintLayout>

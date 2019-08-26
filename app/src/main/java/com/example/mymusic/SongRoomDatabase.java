@@ -1,9 +1,12 @@
 package com.example.mymusic;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;
@@ -42,6 +45,38 @@ public abstract class SongRoomDatabase extends RoomDatabase {
             new PopulateDbAsync(INSTANCE).execute();
         }
     };
+
+//    private static class PopulateDbAsync extends AsyncTask<Void, Void, Void>{
+//
+//        private final SongDao songDao;
+//        String[] songsName;
+//        ArrayList<String> listSong;
+//
+//        PopulateDbAsync (SongRoomDatabase db){
+//            songDao = db.songDao();
+//
+//            listSong = new ArrayList<>();
+//            listSong = FragmentFavorite.songArrayList;
+//            songsName = new String[listSong.size()];
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            if (songDao.getAnySong().length<1){
+//                for (int i = 0; i < songsName.length; i++) {
+//                    Song song = new Song(songsName[i],listSong.get(i).toString());
+//                    songDao.insert(song);
+//                }
+//            }
+//            return null;
+//        }
+//
+//        // get file mp3
+//
+//    }
+
+
+
 
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void>{
 
