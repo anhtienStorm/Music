@@ -43,8 +43,7 @@ public class FragmentHome extends Fragment {
         adapter.setOnClickListenner(new SongListAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                int index = songViewModel.getListSong().getValue().get(position).getId();
-                Intent it = new Intent(getActivity(), PlaySong.class).putExtra("id", index+"");
+                Intent it = new Intent(getActivity(), PlaySong.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
                 startActivity(it);
             }
         });

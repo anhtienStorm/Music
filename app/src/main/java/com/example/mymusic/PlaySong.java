@@ -17,8 +17,8 @@ public class PlaySong extends AppCompatActivity {
         setContentView(R.layout.activity_play_song);
 
         Intent it = getIntent();
-        int index = Integer.parseInt(it.getStringExtra("id"));
-        Uri uri = Uri.parse(SongRoomDatabase.listFileSong.get(index).toString());
+        String stringSong = it.getStringExtra("stringSong");
+        Uri uri = Uri.parse(stringSong);
         mp = MediaPlayer.create(getApplicationContext(), uri);
         mp.start();
     }

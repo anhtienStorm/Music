@@ -1,6 +1,7 @@
 package com.example.mymusic;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -16,8 +17,6 @@ import java.util.List;
 
 @Database(entities = {Song.class}, version = 1, exportSchema = false)
 public abstract class SongRoomDatabase extends RoomDatabase {
-
-    static List<File> listFileSong;
 
     public abstract SongDao songDao();
     private static SongRoomDatabase INSTANCE;
@@ -48,6 +47,7 @@ public abstract class SongRoomDatabase extends RoomDatabase {
 
         private final SongDao songDao;
         String[] songsName;
+        List<File> listFileSong;
 
         PopulateDbAsync (SongRoomDatabase db){
             songDao = db.songDao();
@@ -63,7 +63,7 @@ public abstract class SongRoomDatabase extends RoomDatabase {
         protected Void doInBackground(Void... voids) {
             if (songDao.getAnySong().length<1){
                 for (int i = 0; i < songsName.length; i++) {
-                    Song song = new Song(songsName[i]);
+                    Song song = new Song(songsName[i],listFileSong.get(i).toString());
                     songDao.insert(song);
                 }
             }

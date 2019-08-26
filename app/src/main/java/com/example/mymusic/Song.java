@@ -6,7 +6,6 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.io.File;
 
 @Entity(tableName = "song_table")
 public class Song {
@@ -17,8 +16,12 @@ public class Song {
     @ColumnInfo(name = "song_name")
     private String name;
 
-    public Song(@NonNull String name){
+    @ColumnInfo(name = "song_string")
+    private String stringSong;
+
+    public Song(@NonNull String name, String stringSong) {
         this.name = name;
+        this.stringSong = stringSong;
     }
 
     @Ignore
@@ -42,5 +45,13 @@ public class Song {
 
     public void setName(@NonNull String name) {
         this.name = name;
+    }
+
+    public void setStringSong(String stringSong) {
+        this.stringSong = stringSong;
+    }
+
+    public String getStringSong() {
+        return stringSong;
     }
 }
