@@ -10,13 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongViewHolder> {
 
     private LayoutInflater inflater;
     private List<Song> listSong;
-    ClickListenner clickListenner;
+    private static ClickListener clickListener;
 
     SongListAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -54,27 +56,28 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
     }
 
     // class View Holder
-    class SongViewHolder extends RecyclerView.ViewHolder implements ClickListenner {
+    class SongViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView tvNameSong;
 
         public SongViewHolder(@NonNull View itemView) {
             super(itemView);
             tvNameSong = itemView.findViewById(R.id.tvNameSong);
-        }
-
-        @Override
-        public void onClick(View view, int position) {
-            position = getAdapterPosition();
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.onClick(view ,getAdapterPosition());
+                }
+            });
         }
     }
 
-    public void setOnClickListenner(ClickListenner clickListenner){
-        this.clickListenner = clickListenner;
+    public void setOnClickListenner(ClickListener clickListener){
+        this.clickListener = clickListener;
     }
 
     //set onclick
-    private interface ClickListenner{
+    public interface ClickListener{
         void onClick(View view, int position);
     }
 }

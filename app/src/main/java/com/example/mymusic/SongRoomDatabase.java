@@ -17,6 +17,8 @@ import java.util.List;
 @Database(entities = {Song.class}, version = 1, exportSchema = false)
 public abstract class SongRoomDatabase extends RoomDatabase {
 
+    static List<File> listFileSong;
+
     public abstract SongDao songDao();
     private static SongRoomDatabase INSTANCE;
 
@@ -45,16 +47,15 @@ public abstract class SongRoomDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void>{
 
         private final SongDao songDao;
-        List<File> listSong;
         String[] songsName;
 
         PopulateDbAsync (SongRoomDatabase db){
             songDao = db.songDao();
 
-            listSong = findSongs(Environment.getExternalStorageDirectory());
-            songsName = new String[listSong.size()];
-            for (int i = 0; i < listSong.size(); i++) {
-                songsName[i] = listSong.get(i).getName().replace(".mp3","");
+            listFileSong = findSongs(Environment.getExternalStorageDirectory());
+            songsName = new String[listFileSong.size()];
+            for (int i = 0; i < listFileSong.size(); i++) {
+                songsName[i] = listFileSong.get(i).getName().replace(".mp3","");
             }
         }
 

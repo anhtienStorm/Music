@@ -1,5 +1,7 @@
 package com.example.mymusic;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentHome extends Fragment {
@@ -36,6 +40,14 @@ public class FragmentHome extends Fragment {
             }
         });
 
+        adapter.setOnClickListenner(new SongListAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                int index = songViewModel.getListSong().getValue().get(position).getId();
+                Intent it = new Intent(getActivity(), PlaySong.class).putExtra("id", index+"");
+                startActivity(it);
+            }
+        });
 
         return view;
     }
