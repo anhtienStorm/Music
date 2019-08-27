@@ -1,11 +1,17 @@
 package com.example.mymusic;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,9 +25,29 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 public class FragmentHome extends Fragment {
 
     private SongViewModel songViewModel;
+    MusicService musicService;
+    boolean isMusicService = false;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
+            musicService = musicServiceBinder.getService();
+            isMusicService = true;
+            if (musicService.isPlaying()) {
+                Toast.makeText(getActivity(), "Playing", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
 
     @Nullable
     @Override
@@ -43,8 +69,18 @@ public class FragmentHome extends Fragment {
         adapter.setOnClickListenner(new SongListAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent it = new Intent(getActivity(), PlaySong.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
-                startActivity(it);
+//                Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
+//                getActivity().startService(it);
+
+                if (isMusicService){
+                    getActivity().unbindService(serviceConnection);
+                    Intent it = new Intent(getActivity(),MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
+                    getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
+                } else {
+                    Intent it = new Intent(getActivity(),MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
+                    getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
+                }
+
             }
         });
 

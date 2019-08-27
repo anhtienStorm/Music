@@ -9,17 +9,20 @@ import android.os.Bundle;
 
 public class PlaySong extends AppCompatActivity {
 
-    MediaPlayer mp;
+//    MediaPlayer mp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_song);
 
-        Intent it = getIntent();
-        String stringSong = it.getStringExtra("stringSong");
-        Uri uri = Uri.parse(stringSong);
-        mp = MediaPlayer.create(getApplicationContext(), uri);
-        mp.start();
+//        Intent it = getIntent();
+//        String stringSong = it.getStringExtra("stringSong");
+//        Uri uri = Uri.parse(stringSong);
+//        mp = MediaPlayer.create(getApplicationContext(), uri);
+//        mp.start();
+
+
     }
 }

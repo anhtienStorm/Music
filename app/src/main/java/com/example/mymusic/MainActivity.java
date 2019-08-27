@@ -1,8 +1,11 @@
 package com.example.mymusic;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.ReceiverCallNotAllowedException;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,7 +21,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.IBinder;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +31,23 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SongViewModel songViewModel;
+    Button btPlay;
+//    MusicService musicService;
+//    boolean isMusicService = false;
+//    ServiceConnection serviceConnection = new ServiceConnection() {
+//        @Override
+//        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//            MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
+//            musicService = musicServiceBinder.getService();
+//            //isMusicService = true;
+//        }
+//
+//        @Override
+//        public void onServiceDisconnected(ComponentName componentName) {
+//
+//        }
+//    };
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -57,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentHome()).commit();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        btPlay = findViewById(R.id.btPlay);
+//        Intent it = new Intent(this,MusicService.class);
+//        bindService(it, serviceConnection, BIND_AUTO_CREATE);
+//        if (musicService.isPlaying()){
+//            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+//        }
     }
 
 
