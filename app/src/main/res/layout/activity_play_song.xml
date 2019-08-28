@@ -57,7 +57,7 @@
         android:background="@drawable/ic_skip_next_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btPlay"
-        app:layout_constraintRight_toLeftOf="@+id/btRandom"
+        app:layout_constraintRight_toLeftOf="@+id/btShuffle"
         app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
@@ -81,7 +81,7 @@
         app:layout_constraintTop_toBottomOf="@+id/seekTime" />
 
     <Button
-        android:id="@+id/btRandom"
+        android:id="@+id/btShuffle"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_shuffle_black_24dp"

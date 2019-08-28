@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btPlay;
+    Button btPlay , btNext;
     MusicService musicService;
     boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
             musicService = musicServiceBinder.getService();
             isMusicService = true;
             if (musicService.isPlaying()) {
-                musicService.pause();
+                btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
             }
         }
 
@@ -84,7 +84,21 @@ public class MainActivity extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         btPlay = findViewById(R.id.btMainPlay);
+        btNext = findViewById(R.id.btMainNext);
         btPlay.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (musicService.isPlaying()) {
+                    musicService.pause();
+                    btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                } else if (!musicService.isPlaying()){
+                    musicService.play();
+                    btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                }
+            }
+        });
+
+        btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent it = new Intent(MainActivity.this, MusicService.class);
@@ -122,11 +136,23 @@ public class MainActivity extends AppCompatActivity {
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(MainActivity.this, "Quyền đọc file: được phép", Toast.LENGTH_SHORT).show();
             } else {
+
                 Toast.makeText(MainActivity.this, "Quyền đọc file: không được phép", Toast.LENGTH_SHORT).show();
 
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    public void clickMusic(View view) {
+        Intent it = new Intent(this, PlaySong.class);
+        startActivity(it);
+    }
+
+    public void connect(View view){
+        Intent it = new Intent(MainActivity.this, MusicService.class);
+        bindService(it, serviceConnection, 0);
+
     }
 }

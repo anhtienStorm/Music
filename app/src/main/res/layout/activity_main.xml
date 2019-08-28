@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
+        android:background="@color/cardview_light_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -15,7 +16,7 @@
         <TextView
             android:id="@+id/editSearch"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="35dp"
             android:layout_margin="4dp"
             android:layout_centerVertical="true"
             android:layout_alignParentTop="true"
@@ -36,12 +37,12 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="610dp"
+        android:layout_height="600dp"
         android:layout_above="@+id/layoutPlayMusic">
-
     </FrameLayout>
 
     <RelativeLayout
+        android:onClick="clickMusic"
         android:id="@+id/layoutPlayMusic"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -63,7 +64,6 @@
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:layout_centerVertical="true"
-            android:text="null"
             android:gravity="center"
             android:layout_toLeftOf="@+id/btMainPrevious" />
 

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,10 +38,7 @@ public class FragmentHome extends Fragment {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-//            if (musicService.isPlaying()) {
-//                Toast.makeText(getActivity(), "Playing", Toast.LENGTH_SHORT).show();
-                isMusicService = true;
-//            }
+            isMusicService = true;
         }
 
         @Override
@@ -77,16 +75,12 @@ public class FragmentHome extends Fragment {
                     Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
                     getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
                 }
-
+                TextView tvNamSong = getActivity().findViewById(R.id.nameSong);
+                tvNamSong.setText(songViewModel.getListSong().getValue().get(position).getName());
+                getActivity().
             }
         });
         return view;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unbindService(serviceConnection);
-        isMusicService = false;
-    }
 }

@@ -26,16 +26,6 @@ public class MusicService extends Service {
         return mBinder;
     }
 
-    //    @Override
-//    public int onStartCommand(Intent intent, int flags, int startId) {
-//        String stringSong = intent.getStringExtra("stringSong");
-//        Uri uri = Uri.parse(stringSong);
-//        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-//        mediaPlayer.setLooping(true);
-//        mediaPlayer.start();
-//        return START_STICKY;
-//    }
-
     @Override
     public boolean onUnbind(Intent intent) {
         return super.onUnbind(intent);
@@ -46,7 +36,6 @@ public class MusicService extends Service {
         super.onDestroy();
         mediaPlayer.stop();
     }
-
 
     // method
     public boolean isPlaying(){
@@ -62,10 +51,6 @@ public class MusicService extends Service {
 
     public void pause(){
         mediaPlayer.pause();
-    }
-
-    public void stop(){
-        mediaPlayer.stop();
     }
 
     // class
