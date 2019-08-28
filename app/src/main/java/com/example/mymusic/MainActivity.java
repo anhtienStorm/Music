@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.IBinder;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,21 +33,24 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     Button btPlay;
-//    MusicService musicService;
-//    boolean isMusicService = false;
-//    ServiceConnection serviceConnection = new ServiceConnection() {
-//        @Override
-//        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-//            MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
-//            musicService = musicServiceBinder.getService();
-//            //isMusicService = true;
-//        }
-//
-//        @Override
-//        public void onServiceDisconnected(ComponentName componentName) {
-//
-//        }
-//    };
+    MusicService musicService;
+    boolean isMusicService = false;
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
+            musicService = musicServiceBinder.getService();
+            isMusicService = true;
+            if (musicService.isPlaying()) {
+                musicService.pause();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isMusicService = false;
+        }
+    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     selectFragment = new FragmentFavorite();
                     break;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectFragment).commit();
             return true;
         }
     };
@@ -76,20 +80,22 @@ public class MainActivity extends AppCompatActivity {
         initPermission();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FragmentHome()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        btPlay = findViewById(R.id.btPlay);
-//        Intent it = new Intent(this,MusicService.class);
-//        bindService(it, serviceConnection, BIND_AUTO_CREATE);
-//        if (musicService.isPlaying()){
-//            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-//        }
+        btPlay = findViewById(R.id.btMainPlay);
+        btPlay.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(MainActivity.this, MusicService.class);
+                bindService(it, serviceConnection, 0);
+            }
+        });
     }
 
 
     //xin cap quyen runtime
-    public void initPermission(){
+    public void initPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 

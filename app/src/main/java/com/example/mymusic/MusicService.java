@@ -9,7 +9,7 @@ import android.os.IBinder;
 
 public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
-    private Binder mBinder = new MusicServiceBinder();
+    private final Binder mBinder = new MusicServiceBinder();
 
     @Override
     public void onCreate() {
@@ -26,7 +26,7 @@ public class MusicService extends Service {
         return mBinder;
     }
 
-//    @Override
+    //    @Override
 //    public int onStartCommand(Intent intent, int flags, int startId) {
 //        String stringSong = intent.getStringExtra("stringSong");
 //        Uri uri = Uri.parse(stringSong);
