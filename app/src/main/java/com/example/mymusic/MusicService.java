@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 
+
 public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
     private final Binder mBinder = new MusicServiceBinder();
@@ -51,6 +52,17 @@ public class MusicService extends Service {
 
     public void pause(){
         mediaPlayer.pause();
+    }
+
+    public void changSong(String stringSong){
+        Uri uri = Uri.parse(stringSong);
+            mediaPlayer.stop();
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+    }
+
+    public void nextSong(){
     }
 
     // class

@@ -42,7 +42,7 @@
     </FrameLayout>
 
     <RelativeLayout
-        android:onClick="clickMusic"
+        android:onClick="startPlaySong"
         android:id="@+id/layoutPlayMusic"
         android:layout_width="match_parent"
         android:layout_height="55dp"
@@ -54,6 +54,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/disk"
+            android:onClick="connectService"
             android:layout_margin="8dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/nameSong" />

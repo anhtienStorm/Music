@@ -32,7 +32,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btPlay , btNext;
+    Fragment homeFragment, favoriteFragment;
+    Button btPlay, btNext;
     MusicService musicService;
     boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -52,21 +53,23 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    void createFragment() {
+        homeFragment = new FragmentHome();
+        favoriteFragment = new FragmentFavorite();
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Fragment selectFragment = null;
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    selectFragment = new FragmentHome();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
                     break;
                 case R.id.navigation_favorite:
-                    selectFragment = new FragmentFavorite();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, favoriteFragment).commit();
                     break;
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectFragment).commit();
             return true;
         }
     };
@@ -78,9 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
         // xin cap quyen runtime
         initPermission();
+        createFragment();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         btPlay = findViewById(R.id.btMainPlay);
@@ -88,12 +92,14 @@ public class MainActivity extends AppCompatActivity {
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isPlaying()) {
-                    musicService.pause();
-                    btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
-                } else if (!musicService.isPlaying()){
-                    musicService.play();
-                    btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                if (isMusicService) {
+                    if (musicService.isPlaying()) {
+                        musicService.pause();
+                        btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                    } else if (!musicService.isPlaying()) {
+                        musicService.play();
+                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    }
                 }
             }
         });
@@ -101,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent it = new Intent(MainActivity.this, MusicService.class);
-                bindService(it, serviceConnection, 0);
+                if (isMusicService){
+                    musicService.nextSong();
+                }
             }
         });
     }
@@ -145,14 +152,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void clickMusic(View view) {
+    public void startPlaySong(View view) {
         Intent it = new Intent(this, PlaySong.class);
         startActivity(it);
     }
 
-    public void connect(View view){
+    public void connectService(View view) {
         Intent it = new Intent(MainActivity.this, MusicService.class);
         bindService(it, serviceConnection, 0);
-
     }
 }

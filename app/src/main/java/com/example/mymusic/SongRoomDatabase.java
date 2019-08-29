@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-@Database(entities = {Song.class}, version = 1, exportSchema = false)
+@Database(entities = {Song.class}, version = 2, exportSchema = false)
 public abstract class SongRoomDatabase extends RoomDatabase {
 
     public abstract SongDao songDao();
