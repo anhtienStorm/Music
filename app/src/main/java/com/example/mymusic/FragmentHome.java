@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -58,7 +56,7 @@ public class FragmentHome extends Fragment {
         final SongListAdapter adapter = new SongListAdapter(getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //songViewModel = ViewModelProviders.of(this).get(SongViewModel.class);
+        songViewModel = ViewModelProviders.of(this).get(SongViewModel.class);
         songViewModel.getListSong().observe(this, new Observer<List<Song>>() {
             @Override
             public void onChanged(List<Song> songs) {
@@ -81,4 +79,5 @@ public class FragmentHome extends Fragment {
         });
         return view;
     }
+
 }

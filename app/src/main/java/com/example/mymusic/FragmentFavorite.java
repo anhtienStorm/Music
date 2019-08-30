@@ -53,6 +53,7 @@ public class FragmentFavorite extends Fragment {
         {
             //get Columns
             int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
+            int dataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
 
 
             // Store the title, id and artist name in Song Array list.
