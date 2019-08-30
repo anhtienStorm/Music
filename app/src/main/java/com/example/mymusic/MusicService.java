@@ -6,20 +6,32 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+
+import java.util.List;
 
 
 public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
     private final Binder mBinder = new MusicServiceBinder();
+    private String stringSong;
+    private SongRepository songRepository;
+    private LiveData<List<Song>> listSong;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        SongRoomDatabase database =
+        songRepository = new SongRepository(new SongRoomDatabase();
+        listSong = songRepository.getListSong();
+        Log.d("anhtien", String.valueOf(listSong.getValue().size()));
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        String stringSong = intent.getStringExtra("stringSong");
+        stringSong = intent.getStringExtra("stringSong");
         Uri uri = Uri.parse(stringSong);
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.setLooping(true);
@@ -39,35 +51,45 @@ public class MusicService extends Service {
     }
 
     // method
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         if (mediaPlayer.isPlaying())
             return true;
         else
             return false;
     }
 
-    public void play(){
+    public void play() {
         mediaPlayer.start();
     }
 
-    public void pause(){
+    public void pause() {
         mediaPlayer.pause();
     }
 
-    public void changSong(String stringSong){
+    public void changSong(String stringSong) {
         Uri uri = Uri.parse(stringSong);
-            mediaPlayer.stop();
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+        mediaPlayer.stop();
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
     }
 
-    public void nextSong(){
+    public void nextSong() {
+
+    }
+
+    public Song getSongPlay(){
+        for (int i = 0; i < listSong.getValue().size(); i++) {
+            if (listSong.getValue().get(i).getStringSong().equals(stringSong)){
+                return listSong.getValue().get(i);
+            }
+        }
+        return null;
     }
 
     // class
-    public class MusicServiceBinder extends Binder{
-        public MusicService getService(){
+    public class MusicServiceBinder extends Binder {
+        public MusicService getService() {
             return MusicService.this;
         }
     }

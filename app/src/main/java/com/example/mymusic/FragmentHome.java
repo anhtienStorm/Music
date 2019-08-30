@@ -28,7 +28,7 @@ import java.util.List;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
-public class FragmentHome extends Fragment {
+public class FragmentHome extends Fragment /*implements SongListAdapter.ClickListener*/{
 
     private SongViewModel songViewModel;
     MusicService musicService;
@@ -39,6 +39,10 @@ public class FragmentHome extends Fragment {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
             isMusicService = true;
+            TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
+            Button btPlay = getActivity().findViewById(R.id.btMainPlay);
+            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+            tvNameSong.setText(musicService.getSongPlay().getName());
         }
 
         @Override
@@ -66,18 +70,27 @@ public class FragmentHome extends Fragment {
 
         adapter.setOnClickListenner(new SongListAdapter.ClickListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onItemClick(int position) {
                 if (isMusicService) {
                     musicService.changSong(songViewModel.getListSong().getValue().get(position).getStringSong());
                 } else {
                     Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
                     getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
                 }
-                TextView tvNamSong = getActivity().findViewById(R.id.nameSong);
-                tvNamSong.setText(songViewModel.getListSong().getValue().get(position).getName());
             }
         });
         return view;
     }
 
+//    @Override
+//    public void onItemClick(int position) {
+//        if (isMusicService) {
+//            musicService.changSong(songViewModel.getListSong().getValue().get(position).getStringSong());
+//        } else {
+//            Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
+//            getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
+//        }
+//        TextView tvNamSong = getActivity().findViewById(R.id.nameSong);
+//        tvNamSong.setText(songViewModel.getListSong().getValue().get(position).getName());
+//    }
 }

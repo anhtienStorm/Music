@@ -18,7 +18,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
 
     private LayoutInflater inflater;
     private List<Song> listSong;
-    private static ClickListener clickListener;
+    ClickListener clickListener;
 
     SongListAdapter(Context context) {
         inflater = LayoutInflater.from(context);
@@ -60,13 +60,13 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
 
         private final TextView tvNameSong;
 
-        public SongViewHolder(@NonNull View itemView) {
+        public SongViewHolder( View itemView) {
             super(itemView);
             tvNameSong = itemView.findViewById(R.id.tvNameSong);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickListener.onClick(view ,getAdapterPosition());
+                    clickListener.onItemClick(getAdapterPosition());
                 }
             });
         }
@@ -78,6 +78,6 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
 
     //set onclick
     public interface ClickListener{
-        void onClick(View view, int position);
+        void onItemClick(int position);
     }
 }

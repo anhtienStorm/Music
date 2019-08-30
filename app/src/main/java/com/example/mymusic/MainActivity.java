@@ -30,7 +30,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SongListAdapter.ClickListener {
+public class MainActivity extends AppCompatActivity  {
 
     Fragment homeFragment, favoriteFragment;
     Button btPlay , btNext;
@@ -91,12 +91,14 @@ public class MainActivity extends AppCompatActivity implements SongListAdapter.C
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isPlaying()) {
-                    musicService.pause();
-                    btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
-                } else if (!musicService.isPlaying()){
-                    musicService.play();
-                    btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                if (isMusicService){
+                    if (musicService.isPlaying()) {
+                        musicService.pause();
+                        btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                    } else if (!musicService.isPlaying()){
+                        musicService.play();
+                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    }
                 }
             }
         });
@@ -104,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements SongListAdapter.C
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (isMusicService){
+                    musicService.nextSong();
+                }
             }
         });
     }
@@ -157,9 +161,9 @@ public class MainActivity extends AppCompatActivity implements SongListAdapter.C
 
     }
 
-    @Override
-    public void onClick(View view, int position) {
-        Intent it = new Intent(MainActivity.this, MusicService.class);
-        bindService(it, serviceConnection, 0);
-    }
+//    @Override
+//    public void onClick(int position) {
+//        Intent it = new Intent(MainActivity.this, MusicService.class);
+//        bindService(it, serviceConnection, 0);
+//    }
 }

@@ -69,4 +69,10 @@ public class PlaySong extends AppCompatActivity {
         btLoop = findViewById(R.id.btLoop);
         btShuffle = findViewById(R.id.btShuffle);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
+    }
 }
