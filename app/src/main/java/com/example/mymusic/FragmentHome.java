@@ -31,18 +31,15 @@ import static android.content.Context.BIND_AUTO_CREATE;
 public class FragmentHome extends Fragment implements SongListAdapter.ISongListAdapter {
 
     MusicService musicService;
-    boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            //isMusicService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            //isMusicService = false;
         }
     };
 

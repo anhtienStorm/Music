@@ -17,7 +17,6 @@ public class PlaySong extends AppCompatActivity {
 
     Button btPlay, btNext, btPrevious, btLoop, btShuffle;
     MusicService musicService;
-    boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -32,7 +31,6 @@ public class PlaySong extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            isMusicService = false;
         }
     };
 
