@@ -1,7 +1,6 @@
 package com.example.mymusic;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,74 +9,60 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongViewHolder> {
 
-    private LayoutInflater inflater;
-    private List<Song> listSong;
-    ClickListener clickListener;
+    private ArrayList<Song> mListSong;
+    private Context mContext;
+    private ISongListAdapter listenner;
 
-    SongListAdapter(Context context) {
-        inflater = LayoutInflater.from(context);
+    public SongListAdapter(ArrayList<Song> mListSong, Context mContext) {
+        this.mListSong = mListSong;
+        this.mContext = mContext;
     }
 
     @NonNull
     @Override
     public SongViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = inflater.inflate(R.layout.recyclerview_items, parent, false);
-        return new SongViewHolder(itemView);
+        return new SongViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recyclerview_items, parent,false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
-        if (listSong != null) {
-            Song song = listSong.get(position);
-            holder.tvNameSong.setText(song.getName());
-        } else {
-            holder.tvNameSong.setText("No Song !!!");
-        }
+        Song song = mListSong.get(position);
+        holder.tvTitleSong.setText(song.getNameSong());
+        holder.tvArtist.setText(song.getSinger());
     }
 
     @Override
     public int getItemCount() {
-        if (listSong != null)
-            return listSong.size();
-        else return 0;
+        return mListSong.size();
     }
 
+    public class SongViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    // method
-    void setSongs(List<Song> list){
-        listSong = list;
-        notifyDataSetChanged();
-    }
+        private TextView tvTitleSong;
+        private TextView tvArtist;
 
-    // class View Holder
-    class SongViewHolder extends RecyclerView.ViewHolder {
-
-        private final TextView tvNameSong;
-
-        public SongViewHolder( View itemView) {
+        public SongViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvNameSong = itemView.findViewById(R.id.tvNameSong);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    clickListener.onItemClick(getAdapterPosition());
-                }
-            });
+            tvTitleSong = itemView.findViewById(R.id.tvNameSong);
+            tvArtist = itemView.findViewById(R.id.tvArtist);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            listenner.onItemClick(getAdapterPosition());
         }
     }
 
-    public void setOnClickListenner(ClickListener clickListener){
-        this.clickListener = clickListener;
+    public void setOnClickListenner(ISongListAdapter listenner){
+        this.listenner = listenner;
     }
 
-    //set onclick
-    public interface ClickListener{
+    interface ISongListAdapter {
         void onItemClick(int position);
     }
 }

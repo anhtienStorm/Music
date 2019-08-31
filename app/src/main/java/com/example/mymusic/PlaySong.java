@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class PlaySong extends AppCompatActivity {
 
@@ -22,9 +23,10 @@ public class PlaySong extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            isMusicService = true;
-            if (musicService.isPlaying()) {
-                btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+            if (musicService.isMusicPlay()){
+                if (musicService.isPlaying()) {
+                    btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                }    
             }
         }
 
@@ -51,12 +53,20 @@ public class PlaySong extends AppCompatActivity {
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isPlaying()) {
-                    musicService.pause();
-                    btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
-                } else if (!musicService.isPlaying()) {
-                    musicService.play();
-                    btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                Intent replyIntent = new Intent();
+                if (musicService.isMusicPlay()){
+                    if (musicService.isPlaying()) {
+                        musicService.pause();
+                        btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                    } else if (!musicService.isPlaying()) {
+                        musicService.play();
+                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    }
+                    replyIntent.putExtra("statusPlay", musicService.isPlaying());
+                    setResult(RESULT_OK,replyIntent);
+                } else {
+                    setResult(RESULT_CANCELED, replyIntent);
+                    Toast.makeText(PlaySong.this, "Vui lòng chọn bài hát để phát !", Toast.LENGTH_SHORT).show();
                 }
             }
         });

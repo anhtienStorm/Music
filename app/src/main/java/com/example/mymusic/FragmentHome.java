@@ -28,9 +28,8 @@ import java.util.List;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
-public class FragmentHome extends Fragment /*implements SongListAdapter.ClickListener*/{
+public class FragmentHome extends Fragment implements SongListAdapter.ISongListAdapter {
 
-    private SongViewModel songViewModel;
     MusicService musicService;
     boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
@@ -38,16 +37,12 @@ public class FragmentHome extends Fragment /*implements SongListAdapter.ClickLis
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            isMusicService = true;
-            TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
-            Button btPlay = getActivity().findViewById(R.id.btMainPlay);
-            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-            tvNameSong.setText(musicService.getSongPlay().getName());
+            //isMusicService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            isMusicService = false;
+            //isMusicService = false;
         }
     };
 
@@ -56,41 +51,26 @@ public class FragmentHome extends Fragment /*implements SongListAdapter.ClickLis
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        Intent it = new Intent(getActivity(), MusicService.class);
+        getActivity().bindService(it, serviceConnection, 0);
+
+        Music music = new Music(getActivity());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        final SongListAdapter adapter = new SongListAdapter(getActivity());
+        SongListAdapter adapter = new SongListAdapter(music.getListSong(), getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        songViewModel = ViewModelProviders.of(this).get(SongViewModel.class);
-        songViewModel.getListSong().observe(this, new Observer<List<Song>>() {
-            @Override
-            public void onChanged(List<Song> songs) {
-                adapter.setSongs(songs);
-            }
-        });
-
-        adapter.setOnClickListenner(new SongListAdapter.ClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                if (isMusicService) {
-                    musicService.changSong(songViewModel.getListSong().getValue().get(position).getStringSong());
-                } else {
-                    Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
-                    getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
-                }
-            }
-        });
+        adapter.setOnClickListenner(this);
         return view;
     }
 
-//    @Override
-//    public void onItemClick(int position) {
-//        if (isMusicService) {
-//            musicService.changSong(songViewModel.getListSong().getValue().get(position).getStringSong());
-//        } else {
-//            Intent it = new Intent(getActivity(), MusicService.class).putExtra("stringSong", songViewModel.getListSong().getValue().get(position).getStringSong());
-//            getActivity().bindService(it, serviceConnection, BIND_AUTO_CREATE);
-//        }
-//        TextView tvNamSong = getActivity().findViewById(R.id.nameSong);
-//        tvNamSong.setText(songViewModel.getListSong().getValue().get(position).getName());
-//    }
+    @Override
+    public void onItemClick(int position) {
+        musicService.playSong(position);
+        if (musicService.isMusicPlay()){
+            TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
+            Button btPlay = getActivity().findViewById(R.id.btMainPlay);
+            tvNameSong.setText(musicService.getNameSong());
+            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+        }
+    }
 }

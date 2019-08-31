@@ -2,12 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-<TextView
-    android:id="@+id/tvNameSong"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-    />
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvNameSong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <TextView
+        android:id="@+id/tvArtist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp" />
 </LinearLayout>

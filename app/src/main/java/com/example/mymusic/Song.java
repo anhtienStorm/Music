@@ -6,52 +6,42 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-
-@Entity(tableName = "song_table")
 public class Song {
-    @PrimaryKey(autoGenerate = true)
     private int id;
+    private String nameSong;
+    private String dataSong;
+    private String singer;
+    private String albumName;
 
-    @NonNull
-    @ColumnInfo(name = "song_name")
-    private String name;
-
-    @ColumnInfo(name = "song_string")
-    private String stringSong;
-
-    public Song(@NonNull String name, String stringSong) {
-        this.name = name;
-        this.stringSong = stringSong;
-    }
-
-    @Ignore
-    public Song(int id, @NonNull String name) {
+    public Song(int id, String nameSong, String dataSong, String singer, String albumName) {
         this.id = id;
-        this.name = name;
+        this.nameSong = nameSong;
+        this.dataSong = dataSong;
+        this.singer = singer;
+        this.albumName = albumName;
     }
 
     public int getId() {
         return id;
     }
 
-    @NonNull
-    public String getName() {
-        return name;
+    public String getNameSong() {
+        return nameSong;
+    }
+
+    public String getDataSong() {
+        return dataSong;
+    }
+
+    public String getSinger() {
+        return singer;
+    }
+
+    public String getAlbumName() {
+        return albumName;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setName(@NonNull String name) {
-        this.name = name;
-    }
-
-    public void setStringSong(String stringSong) {
-        this.stringSong = stringSong;
-    }
-
-    public String getStringSong() {
-        return stringSong;
     }
 }

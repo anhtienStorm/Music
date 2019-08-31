@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.IBinder;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -33,23 +35,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity  {
 
     Fragment homeFragment, favoriteFragment;
-    Button btPlay , btNext;
+    Button btPlay , btNext, btPrevious;
     MusicService musicService;
-    boolean isMusicService = false;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            isMusicService = true;
-            if (musicService.isPlaying()) {
-                btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            isMusicService = false;
         }
     };
 
@@ -76,22 +72,30 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        connectService();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         initPermission();   // xin cap quyen runtime
-        createFragment();
+        createFragment();   // khoi tao cac fragment
+        btPlay = findViewById(R.id.btMainPlay);
+        btNext = findViewById(R.id.btMainNext);
+        btPrevious = findViewById(R.id.btMainPrevious);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        btPlay = findViewById(R.id.btMainPlay);
-        btNext = findViewById(R.id.btMainNext);
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isMusicService){
+                if (musicService.isMusicPlay()){
                     if (musicService.isPlaying()) {
                         musicService.pause();
                         btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity  {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isMusicService){
+                if (musicService.isMusicPlay()){
                     musicService.nextSong();
                 }
             }
@@ -150,20 +154,27 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+    // chuyen den giao dien phat nhac
     public void startPlaySong(View view) {
         Intent it = new Intent(this, PlaySong.class);
-        startActivity(it);
+        startActivityForResult(it,0);
     }
 
-    public void connectService(View view){
+    public void connectService(){
         Intent it = new Intent(MainActivity.this, MusicService.class);
-        bindService(it, serviceConnection, 0);
+        bindService(it, serviceConnection, BIND_AUTO_CREATE);
 
     }
 
-//    @Override
-//    public void onClick(int position) {
-//        Intent it = new Intent(MainActivity.this, MusicService.class);
-//        bindService(it, serviceConnection, 0);
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK){
+            if (data.getBooleanExtra("statusPlay", false)){
+                btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+            } else {
+                btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+            }
+        }
+    }
 }

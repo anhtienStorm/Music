@@ -10,32 +10,31 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class MusicService extends Service {
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer = null;
     private final Binder mBinder = new MusicServiceBinder();
-    private String stringSong;
-    private SongRepository songRepository;
-    private LiveData<List<Song>> listSong;
+    private ArrayList<Song> listSong;
+    private Music music;
+    private int position;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        SongRoomDatabase database =
-        songRepository = new SongRepository(new SongRoomDatabase();
-        listSong = songRepository.getListSong();
-        Log.d("anhtien", String.valueOf(listSong.getValue().size()));
+        music = new Music(getApplicationContext());
+        listSong = music.getListSong();
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        stringSong = intent.getStringExtra("stringSong");
-        Uri uri = Uri.parse(stringSong);
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+//        position = intent.getIntExtra("position",0);
+//        Uri uri = Uri.parse(listSong.get(position).getDataSong());
+//        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+//        mediaPlayer.setLooping(true);
+//        mediaPlayer.start();
         return mBinder;
     }
 
@@ -51,6 +50,17 @@ public class MusicService extends Service {
     }
 
     // method
+
+    public boolean isMusicPlay(){
+        if (mediaPlayer!=null)
+            return true;
+        return false;
+    }
+
+    public String getNameSong(){
+        return listSong.get(position).getNameSong();
+    }
+
     public boolean isPlaying() {
         if (mediaPlayer.isPlaying())
             return true;
@@ -66,9 +76,13 @@ public class MusicService extends Service {
         mediaPlayer.pause();
     }
 
-    public void changSong(String stringSong) {
-        Uri uri = Uri.parse(stringSong);
-        mediaPlayer.stop();
+    public void playSong(int position) {
+        Uri uri = Uri.parse(listSong.get(position).getDataSong());
+        if (mediaPlayer!=null){
+            if (mediaPlayer.isPlaying()){
+                mediaPlayer.stop();
+            }
+        }
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
@@ -76,15 +90,6 @@ public class MusicService extends Service {
 
     public void nextSong() {
 
-    }
-
-    public Song getSongPlay(){
-        for (int i = 0; i < listSong.getValue().size(); i++) {
-            if (listSong.getValue().get(i).getStringSong().equals(stringSong)){
-                return listSong.getValue().get(i);
-            }
-        }
-        return null;
     }
 
     // class
