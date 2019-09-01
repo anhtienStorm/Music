@@ -105,8 +105,6 @@ public class MainActivity extends AppCompatActivity  {
                         musicService.play();
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                     }
-                    Toast.makeText(MainActivity.this, musicService.getNameSong(), Toast.LENGTH_SHORT).show();
-
                 }
             }
         });

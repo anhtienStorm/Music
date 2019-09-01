@@ -135,13 +135,7 @@ public class MusicService extends Service {
         return mediaPlayer.getDuration();
     }
 
-    public void setSeekTo(int seekProgress){
-        mediaPlayer.seekTo(seekProgress);
-    }
 
-    public int getCurrentDuration(){
-        return mediaPlayer.getCurrentPosition();
-    }
 
     // class
     public class MusicServiceBinder extends Binder {
