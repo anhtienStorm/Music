@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity  {
 
     Fragment homeFragment, favoriteFragment;
     Button btPlay , btNext, btPrevious;
+    TextView tvNameSong;
     MusicService musicService;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity  {
         btPlay = findViewById(R.id.btMainPlay);
         btNext = findViewById(R.id.btMainNext);
         btPrevious = findViewById(R.id.btMainPrevious);
+        tvNameSong = findViewById(R.id.nameSong);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
@@ -103,6 +105,8 @@ public class MainActivity extends AppCompatActivity  {
                         musicService.play();
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                     }
+                    Toast.makeText(MainActivity.this, musicService.getNameSong(), Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -112,6 +116,23 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 if (musicService.isMusicPlay()){
                     musicService.nextSong();
+                    if (musicService.isPlaying()){
+                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    }
+                    tvNameSong.setText(musicService.getNameSong());
+                }
+            }
+        });
+
+        btPrevious.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (musicService.isMusicPlay()){
+                    musicService.previousSong();
+                    if (musicService.isPlaying()){
+                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                    }
+                    tvNameSong.setText(musicService.getNameSong());
                 }
             }
         });
@@ -163,7 +184,6 @@ public class MainActivity extends AppCompatActivity  {
     public void connectService(){
         Intent it = new Intent(MainActivity.this, MusicService.class);
         bindService(it, serviceConnection, BIND_AUTO_CREATE);
-
     }
 
     @Override

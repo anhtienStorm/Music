@@ -1,15 +1,20 @@
 package com.example.mymusic;
 
+import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +35,6 @@ public class MusicService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-//        position = intent.getIntExtra("position",0);
-//        Uri uri = Uri.parse(listSong.get(position).getDataSong());
-//        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-//        mediaPlayer.setLooping(true);
-//        mediaPlayer.start();
         return mBinder;
     }
 
@@ -50,14 +50,13 @@ public class MusicService extends Service {
     }
 
     // method
-
-    public boolean isMusicPlay(){
-        if (mediaPlayer!=null)
+    public boolean isMusicPlay() {
+        if (mediaPlayer != null)
             return true;
         return false;
     }
 
-    public String getNameSong(){
+    public String getNameSong() {
         return listSong.get(position).getNameSong();
     }
 
@@ -77,9 +76,10 @@ public class MusicService extends Service {
     }
 
     public void playSong(int position) {
+        this.position = position;
         Uri uri = Uri.parse(listSong.get(position).getDataSong());
-        if (mediaPlayer!=null){
-            if (mediaPlayer.isPlaying()){
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }
         }
@@ -89,7 +89,58 @@ public class MusicService extends Service {
     }
 
     public void nextSong() {
+        if (isMusicPlay()) {
+            if (position == listSong.size() - 1) {
+                position = 0;
+            } else {
+                position += 1;
+            }
+            Uri uri = Uri.parse(listSong.get(position).getDataSong());
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            }
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
+    }
 
+    public void previousSong() {
+        if (isMusicPlay()) {
+            if (position == 0) {
+                position = listSong.size() - 1;
+            } else {
+                position -= 1;
+            }
+            Uri uri = Uri.parse(listSong.get(position).getDataSong());
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            }
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+            mediaPlayer.setLooping(true);
+            mediaPlayer.start();
+        }
+    }
+
+    public String getTotalTime() {
+        SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
+        return formatTimeSong.format(mediaPlayer.getDuration());
+    }
+
+    public int getDuration(){
+        return mediaPlayer.getDuration();
+    }
+
+    public void setSeekTo(int seekProgress){
+        mediaPlayer.seekTo(seekProgress);
+    }
+
+    public int getCurrentDuration(){
+        return mediaPlayer.getCurrentPosition();
     }
 
     // class
