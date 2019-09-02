@@ -26,7 +26,10 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +40,9 @@ public class MainActivity extends AppCompatActivity  {
     Fragment homeFragment, favoriteFragment;
     Button btPlay , btNext, btPrevious;
     TextView tvNameSong;
+    ImageView imgSong;
     MusicService musicService;
+    Animation animation;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -75,7 +80,13 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onStart() {
         super.onStart();
-        connectService();
+        if (MusicService.x == 0){
+            connectService();
+        } else {
+            Intent it = new Intent(MainActivity.this, MusicService.class);
+            bindService(it, serviceConnection, 0);
+        }
+        Toast.makeText(MainActivity.this, MusicService.x+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -85,10 +96,8 @@ public class MainActivity extends AppCompatActivity  {
 
         initPermission();   // xin cap quyen runtime
         createFragment();   // khoi tao cac fragment
-        btPlay = findViewById(R.id.btMainPlay);
-        btNext = findViewById(R.id.btMainNext);
-        btPrevious = findViewById(R.id.btMainPrevious);
-        tvNameSong = findViewById(R.id.nameSong);
+        animation = AnimationUtils.loadAnimation(this, R.anim.disk_rotate);
+        initView();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
@@ -101,9 +110,11 @@ public class MainActivity extends AppCompatActivity  {
                     if (musicService.isPlaying()) {
                         musicService.pause();
                         btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                        imgSong.clearAnimation();
                     } else if (!musicService.isPlaying()){
                         musicService.play();
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                        imgSong.startAnimation(animation);
                     }
                 }
             }
@@ -173,6 +184,14 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+    public void initView(){
+        btPlay = findViewById(R.id.btMainPlay);
+        btNext = findViewById(R.id.btMainNext);
+        btPrevious = findViewById(R.id.btMainPrevious);
+        tvNameSong = findViewById(R.id.nameSong);
+        imgSong = findViewById(R.id.imgSong);
+    }
+
     // chuyen den giao dien phat nhac
     public void startPlaySong(View view) {
         Intent it = new Intent(this, PlaySong.class);
@@ -193,6 +212,7 @@ public class MainActivity extends AppCompatActivity  {
             } else {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
+            tvNameSong.setText(data.getStringExtra("currentSong"));
         }
     }
 }

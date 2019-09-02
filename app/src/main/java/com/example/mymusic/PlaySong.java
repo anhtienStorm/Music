@@ -32,7 +32,7 @@ public class PlaySong extends AppCompatActivity {
             if (musicService.isMusicPlay()) {
                 tvTotalTime.setText(musicService.getTotalTime());
                 seekBar.setMax(musicService.getDuration());
-
+                updateTimeSong();
                 if (musicService.isPlaying()) {
                     btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                 }
@@ -70,6 +70,7 @@ public class PlaySong extends AppCompatActivity {
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                     }
                     replyIntent.putExtra("statusPlay", musicService.isPlaying());
+                    replyIntent.putExtra("currentSong", musicService.getNameSong());
                     setResult(RESULT_OK, replyIntent);
                 } else {
                     setResult(RESULT_CANCELED, replyIntent);
@@ -81,6 +82,7 @@ public class PlaySong extends AppCompatActivity {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent replyIntent = new Intent();
                 if (musicService.isMusicPlay()){
                     musicService.nextSong();
                     if (musicService.isPlaying()){
@@ -88,7 +90,10 @@ public class PlaySong extends AppCompatActivity {
                     }
                     tvTotalTime.setText(musicService.getTotalTime());
                     seekBar.setMax(musicService.getDuration());
-
+                    updateTimeSong();
+                    replyIntent.putExtra("statusPlay", musicService.isPlaying());
+                    replyIntent.putExtra("currentSong", musicService.getNameSong());
+                    setResult(RESULT_OK, replyIntent);
                 }
             }
         });
@@ -96,6 +101,7 @@ public class PlaySong extends AppCompatActivity {
         btPrevious.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent replyIntent = new Intent();
                 if (musicService.isMusicPlay()){
                     musicService.previousSong();
                     if (musicService.isPlaying()){
@@ -103,12 +109,30 @@ public class PlaySong extends AppCompatActivity {
                     }
                     tvTotalTime.setText(musicService.getTotalTime());
                     seekBar.setMax(musicService.getDuration());
-
+                    updateTimeSong();
+                    replyIntent.putExtra("statusPlay", musicService.isPlaying());
+                    replyIntent.putExtra("currentSong", musicService.getNameSong());
+                    setResult(RESULT_OK, replyIntent);
                 }
             }
         });
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
 
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                musicService.setSeekTo(seekBar.getProgress());
+            }
+        });
 
 //        if (musicService.isMusicPlay()){
 //            replyIntent.putExtra("statusPlay", musicService.isPlaying());
@@ -136,5 +160,16 @@ public class PlaySong extends AppCompatActivity {
         unbindService(serviceConnection);
     }
 
-
+    public void updateTimeSong(){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
+                tvTimeSong.setText(formatTimeSong.format(musicService.getCurrentDuration()));
+                seekBar.setProgress(musicService.getCurrentDuration());
+                handler.postDelayed(this, 500);
+            }
+        }, 100);
+    }
 }

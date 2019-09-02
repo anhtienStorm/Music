@@ -7,41 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:background="@color/cardview_light_background"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/fragment_container">
-        <TextView
-            android:id="@+id/editSearch"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_margin="4dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentTop="true"
-            android:background="@null"
-            android:layout_toLeftOf="@+id/btSearch" />
-
-        <Button
-            android:id="@+id/btSearch"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_margin="4dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_search_black_24dp" />
-    </RelativeLayout>
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
+        android:layout_height="match_parent"
         android:layout_above="@+id/layoutPlayMusic">
     </FrameLayout>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:onClick="startPlaySong"
         android:id="@+id/layoutPlayMusic"
         android:layout_width="match_parent"
@@ -50,30 +23,43 @@
         android:background="@color/cardview_light_background">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/imgSong"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/disk"
-            android:layout_margin="8dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/nameSong" />
+            android:src="@drawable/icon_disk"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/nameSong"/>
 
         <TextView
             android:id="@+id/nameSong"
             android:layout_width="170dp"
-            android:layout_height="40dp"
-            android:layout_margin="8dp"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:layout_toLeftOf="@+id/btMainPrevious" />
+            android:layout_height="20dp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/artist"
+            app:layout_constraintLeft_toRightOf="@+id/imgSong"
+            app:layout_constraintRight_toLeftOf="@+id/btMainPrevious"/>
+
+        <TextView
+            android:id="@+id/artist"
+            android:layout_width="170dp"
+            android:layout_height="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/nameSong"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/imgSong"
+            app:layout_constraintRight_toLeftOf="@+id/btMainPrevious" />
 
         <Button
             android:id="@+id/btMainPrevious"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btMainPlay"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/nameSong"
+            app:layout_constraintRight_toLeftOf="@+id/btMainPlay"
             android:background="@drawable/ic_skip_previous_black_24dp"/>
 
         <Button
@@ -81,8 +67,10 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/btMainNext"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/btMainPrevious"
+            app:layout_constraintRight_toLeftOf="@+id/btMainNext"
             android:background="@drawable/ic_play_black_24dp"/>
 
         <Button
@@ -90,11 +78,13 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/btMainPlay"
+            app:layout_constraintRight_toRightOf="parent"
             android:background="@drawable/ic_skip_next_black_24dp"/>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

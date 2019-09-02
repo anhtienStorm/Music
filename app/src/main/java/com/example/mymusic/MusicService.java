@@ -25,6 +25,7 @@ public class MusicService extends Service {
     private ArrayList<Song> listSong;
     private Music music;
     private int position;
+    static int x = 0;
 
     @Override
     public void onCreate() {
@@ -35,6 +36,7 @@ public class MusicService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+        x = 1;
         return mBinder;
     }
 
@@ -46,7 +48,6 @@ public class MusicService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mediaPlayer.stop();
     }
 
     // method
@@ -135,7 +136,13 @@ public class MusicService extends Service {
         return mediaPlayer.getDuration();
     }
 
+    public void setSeekTo(int seekProgress){
+        mediaPlayer.seekTo(seekProgress);
+    }
 
+    public int getCurrentDuration(){
+        return mediaPlayer.getCurrentPosition();
+    }
 
     // class
     public class MusicServiceBinder extends Binder {
