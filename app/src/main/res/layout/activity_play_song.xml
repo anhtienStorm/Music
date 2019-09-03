@@ -9,13 +9,14 @@
     <RelativeLayout
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="530dp"
         app:layout_constraintBottom_toTopOf="@+id/Time"
         app:layout_constraintTop_toTopOf="parent" >
         <TextView
             android:id="@+id/playSong_nameSong"
             android:layout_width="match_parent"
             android:textStyle="bold"
+            android:gravity="center"
             android:layout_height="50dp" />
 
         <ImageView

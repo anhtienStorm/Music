@@ -9,7 +9,7 @@
         android:id="@+id/imageSong"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:background="@drawable/image_background"/>
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

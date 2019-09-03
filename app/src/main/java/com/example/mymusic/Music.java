@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class Music {
     Context context;
 
-
     public Music(Context context){
         this.context = context;
     }

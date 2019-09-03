@@ -1,22 +1,14 @@
 package com.example.mymusic;
 
-import android.app.Activity;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-
-import androidx.lifecycle.LiveData;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class MusicService extends Service {
@@ -25,7 +17,6 @@ public class MusicService extends Service {
     private ArrayList<Song> listSong;
     private Music music;
     private int position;
-    static int x = 0;
 
     @Override
     public void onCreate() {
@@ -36,7 +27,6 @@ public class MusicService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        x = 1;
         return mBinder;
     }
 
@@ -61,7 +51,7 @@ public class MusicService extends Service {
         return listSong.get(position).getNameSong();
     }
 
-    public String getArtist(){
+    public String getArtist() {
         return listSong.get(position).getSinger();
     }
 
@@ -136,15 +126,15 @@ public class MusicService extends Service {
         return formatTimeSong.format(mediaPlayer.getDuration());
     }
 
-    public int getDuration(){
+    public int getDuration() {
         return mediaPlayer.getDuration();
     }
 
-    public void setSeekTo(int seekProgress){
+    public void setSeekTo(int seekProgress) {
         mediaPlayer.seekTo(seekProgress);
     }
 
-    public int getCurrentDuration(){
+    public int getCurrentDuration() {
         return mediaPlayer.getCurrentPosition();
     }
 

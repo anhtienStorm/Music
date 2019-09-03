@@ -1,12 +1,12 @@
 package com.example.mymusic;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ReceiverCallNotAllowedException;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,12 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,25 +29,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     Fragment homeFragment, favoriteFragment;
-    Button btPlay , btNext, btPrevious;
+    Button btPlay, btNext, btPrevious;
     TextView tvNameSong, tvArtist;
     ImageView imgSong;
     MusicService musicService;
+    boolean checkService = false;
     Animation animation;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
+            update();
+            checkService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            checkService = false;
         }
     };
 
@@ -65,14 +63,14 @@ public class MainActivity extends AppCompatActivity  {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
                     break;
                 case R.id.navigation_favorite:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,favoriteFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, favoriteFragment).commit();
                     break;
             }
             return true;
         }
     };
 
-    void createFragment(){
+    void createFragment() {
         homeFragment = new FragmentHome();
         favoriteFragment = new FragmentFavorite();
     }
@@ -80,13 +78,19 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onStart() {
         super.onStart();
-        if (MusicService.x == 0){
+        if (checkService){
             connectService();
         } else {
-            Intent it = new Intent(MainActivity.this, MusicService.class);
-            bindService(it, serviceConnection, 0);
+
         }
-        Toast.makeText(MainActivity.this, MusicService.x+"", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (checkService){
+            update();
+        }
     }
 
     @Override
@@ -106,16 +110,15 @@ public class MainActivity extends AppCompatActivity  {
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()){
+                if (musicService.isMusicPlay()) {
                     if (musicService.isPlaying()) {
                         musicService.pause();
-                        btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
                         imgSong.clearAnimation();
-                    } else if (!musicService.isPlaying()){
+                    } else if (!musicService.isPlaying()) {
                         musicService.play();
-                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                         imgSong.startAnimation(animation);
                     }
+                    update();
                 }
             }
         });
@@ -123,28 +126,24 @@ public class MainActivity extends AppCompatActivity  {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()){
+                if (musicService.isMusicPlay()) {
                     musicService.nextSong();
-                    if (musicService.isPlaying()){
-                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-                    }
-                    tvNameSong.setText(musicService.getNameSong());
                 }
+                update();
             }
         });
 
         btPrevious.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()){
+                if (musicService.isMusicPlay()) {
                     musicService.previousSong();
-                    if (musicService.isPlaying()){
-                        btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-                    }
-                    tvNameSong.setText(musicService.getNameSong());
                 }
+                update();
             }
         });
+
+
     }
 
     //xin cap quyen runtime
@@ -184,7 +183,7 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
-    public void initView(){
+    public void initView() {
         btPlay = findViewById(R.id.btMainPlay);
         btNext = findViewById(R.id.btMainNext);
         btPrevious = findViewById(R.id.btMainPrevious);
@@ -196,25 +195,32 @@ public class MainActivity extends AppCompatActivity  {
     // chuyen den giao dien phat nhac
     public void startPlaySong(View view) {
         Intent it = new Intent(this, PlaySong.class);
-        startActivityForResult(it,0);
+        startActivity(it);
+
     }
 
-    public void connectService(){
+    public void connectService() {
         Intent it = new Intent(MainActivity.this, MusicService.class);
         bindService(it, serviceConnection, BIND_AUTO_CREATE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0 && resultCode == RESULT_OK){
-            if (data.getBooleanExtra("statusPlay", false)){
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 0){
+//            update();
+//        }
+//    }
+
+    public void update(){
+        if (musicService.isMusicPlay()) {
+            tvNameSong.setText(musicService.getNameSong());
+            tvArtist.setText(musicService.getArtist());
+            if (musicService.isPlaying()) {
                 btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
             } else {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
-            tvNameSong.setText(data.getStringExtra("currentSong"));
-            tvArtist.setText(data.getStringExtra("artist"));
         }
     }
 }
