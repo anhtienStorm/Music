@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity  {
 
     Fragment homeFragment, favoriteFragment;
     Button btPlay , btNext, btPrevious;
-    TextView tvNameSong;
+    TextView tvNameSong, tvArtist;
     ImageView imgSong;
     MusicService musicService;
     Animation animation;
@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity  {
         btNext = findViewById(R.id.btMainNext);
         btPrevious = findViewById(R.id.btMainPrevious);
         tvNameSong = findViewById(R.id.nameSong);
+        tvArtist = findViewById(R.id.artist);
         imgSong = findViewById(R.id.imgSong);
     }
 
@@ -213,6 +214,7 @@ public class MainActivity extends AppCompatActivity  {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
             tvNameSong.setText(data.getStringExtra("currentSong"));
+            tvArtist.setText(data.getStringExtra("artist"));
         }
     }
 }

@@ -68,8 +68,10 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
         musicService.playSong(position);
         if (musicService.isMusicPlay()){
             TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
+            TextView tvArtist = getActivity().findViewById(R.id.artist);
             Button btPlay = getActivity().findViewById(R.id.btMainPlay);
             tvNameSong.setText(musicService.getNameSong());
+            tvArtist.setText(musicService.getArtist());
             btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
         }
     }

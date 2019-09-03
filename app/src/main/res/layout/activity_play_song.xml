@@ -6,12 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".PlaySong">
 
-    <View
+    <RelativeLayout
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         app:layout_constraintBottom_toTopOf="@+id/Time"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+        <TextView
+            android:id="@+id/playSong_nameSong"
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/imgSong"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/icon_disk" />
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Time"

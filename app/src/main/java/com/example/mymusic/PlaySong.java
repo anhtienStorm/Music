@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,9 +24,11 @@ import java.text.SimpleDateFormat;
 public class PlaySong extends AppCompatActivity {
 
     Button btPlay, btNext, btPrevious, btLoop, btShuffle;
-    TextView tvTotalTime, tvTimeSong;
+    TextView tvNameSong, tvTotalTime, tvTimeSong;
+    ImageView imgSong;
     SeekBar seekBar;
     MusicService musicService;
+    Animation animation;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -56,6 +61,7 @@ public class PlaySong extends AppCompatActivity {
         setContentView(R.layout.activity_play_song);
 
         initView();
+        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disk_rotate);
 
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -65,12 +71,16 @@ public class PlaySong extends AppCompatActivity {
                     if (musicService.isPlaying()) {
                         musicService.pause();
                         btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
+                        imgSong.clearAnimation();
                     } else if (!musicService.isPlaying()) {
                         musicService.play();
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+                        imgSong.startAnimation(animation);
                     }
+                    tvNameSong.setText(musicService.getNameSong());
                     replyIntent.putExtra("statusPlay", musicService.isPlaying());
                     replyIntent.putExtra("currentSong", musicService.getNameSong());
+                    replyIntent.putExtra("artist", musicService.getArtist());
                     setResult(RESULT_OK, replyIntent);
                 } else {
                     setResult(RESULT_CANCELED, replyIntent);
@@ -88,11 +98,13 @@ public class PlaySong extends AppCompatActivity {
                     if (musicService.isPlaying()){
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                     }
+                    tvNameSong.setText(musicService.getNameSong());
                     tvTotalTime.setText(musicService.getTotalTime());
                     seekBar.setMax(musicService.getDuration());
                     updateTimeSong();
                     replyIntent.putExtra("statusPlay", musicService.isPlaying());
                     replyIntent.putExtra("currentSong", musicService.getNameSong());
+                    replyIntent.putExtra("artist", musicService.getArtist());
                     setResult(RESULT_OK, replyIntent);
                 }
             }
@@ -107,11 +119,13 @@ public class PlaySong extends AppCompatActivity {
                     if (musicService.isPlaying()){
                         btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
                     }
+                    tvNameSong.setText(musicService.getNameSong());
                     tvTotalTime.setText(musicService.getTotalTime());
                     seekBar.setMax(musicService.getDuration());
                     updateTimeSong();
                     replyIntent.putExtra("statusPlay", musicService.isPlaying());
                     replyIntent.putExtra("currentSong", musicService.getNameSong());
+                    replyIntent.putExtra("artist", musicService.getArtist());
                     setResult(RESULT_OK, replyIntent);
                 }
             }
@@ -134,13 +148,6 @@ public class PlaySong extends AppCompatActivity {
             }
         });
 
-//        if (musicService.isMusicPlay()){
-//            replyIntent.putExtra("statusPlay", musicService.isPlaying());
-//            setResult(RESULT_OK, replyIntent);
-//        } else {
-//            setResult(RESULT_CANCELED, replyIntent);
-//            Toast.makeText(PlaySong.this, "Vui lòng chọn bài hát để phát !", Toast.LENGTH_SHORT).show();
-//        }
     }
 
     public void initView() {
@@ -149,15 +156,17 @@ public class PlaySong extends AppCompatActivity {
         btPrevious = findViewById(R.id.btPrevious);
         btLoop = findViewById(R.id.btLoop);
         btShuffle = findViewById(R.id.btShuffle);
+        tvNameSong =findViewById(R.id.playSong_nameSong);
         tvTimeSong =findViewById(R.id.tvTimeSong);
         tvTotalTime =findViewById(R.id.tvTotalTime);
+        imgSong = findViewById(R.id.imgSong);
         seekBar = findViewById(R.id.seekBarSong);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(serviceConnection);
+        //unbindService(serviceConnection);
     }
 
     public void updateTimeSong(){

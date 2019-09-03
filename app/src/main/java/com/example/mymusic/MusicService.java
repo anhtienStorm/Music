@@ -61,6 +61,10 @@ public class MusicService extends Service {
         return listSong.get(position).getNameSong();
     }
 
+    public String getArtist(){
+        return listSong.get(position).getSinger();
+    }
+
     public boolean isPlaying() {
         if (mediaPlayer.isPlaying())
             return true;
