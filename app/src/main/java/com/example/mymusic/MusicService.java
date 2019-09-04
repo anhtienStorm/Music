@@ -1,11 +1,17 @@
 package com.example.mymusic;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.Button;
+import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +34,24 @@ public class MusicService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Intent notificationIntent = new Intent(this,MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+
+        RemoteViews notificationView = new RemoteViews(this.getPackageName(),R.layout.notification_layout);
+
+        Notification notification = new NotificationCompat.Builder(this,NotificationApp.CHANNEL_ID)
+                .setContentTitle("Music service is running")
+                .setContentText(getNameSong())
+                .setSmallIcon(R.drawable.icon_disk)
+                .setCustomBigContentView(notificationView)
+                .setContentIntent(pendingIntent)
+                .build();
+        startForeground(1,notification);
+        return START_NOT_STICKY;
     }
 
     @Override

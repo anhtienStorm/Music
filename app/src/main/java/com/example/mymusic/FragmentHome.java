@@ -49,10 +49,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        Intent it = new Intent(getActivity(), MusicService.class);
-        getActivity().bindService(it, serviceConnection, 0);
-
+        connectService();
         Music music = new Music(getActivity());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         SongListAdapter adapter = new SongListAdapter(music.getListSong(), getActivity());
@@ -66,7 +63,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     @Override
     public void onItemClick(int position) {
         musicService.playSong(position);
-        if (musicService.isMusicPlay()){
+        if (musicService.isMusicPlay()) {
             TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
             TextView tvArtist = getActivity().findViewById(R.id.artist);
             Button btPlay = getActivity().findViewById(R.id.btMainPlay);
@@ -74,5 +71,10 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
             tvArtist.setText(musicService.getArtist());
             btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
         }
+    }
+
+    public void connectService() {
+        Intent it = new Intent(getActivity(), MusicService.class);
+        getActivity().bindService(it, serviceConnection, 0);
     }
 }

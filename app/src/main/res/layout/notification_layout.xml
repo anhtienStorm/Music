@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/imgNotifySong"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:text="My Music"
+                />
+            <TextView
+                android:id="@+id/tvNotifyNameSong"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:layout_height="30dp"
+                />
+            <TextView
+                android:id="@+id/tvNotifyArtistSong"
+                android:layout_width="match_parent"
+                android:gravity="center_vertical"
+                android:paddingLeft="8dp"
+                android:layout_height="30dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDD"
+        android:gravity="center"
+        >
+
+        <Button
+            android:id="@+id/btNotifyPrevious"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/ic_skip_previous_black_24dp"
+            />
+        <Button
+            android:id="@+id/btNotifyPlay"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/ic_play_black_24dp"
+            />
+        <Button
+            android:id="@+id/btNotifyNext"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@drawable/ic_skip_next_black_24dp"
+            />
+
+    </LinearLayout>
+</LinearLayout>

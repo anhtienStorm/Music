@@ -1,27 +1,19 @@
 package com.example.mymusic;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
-import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -33,7 +25,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    Fragment homeFragment, favoriteFragment;
+    Fragment homeFragment, favoriteFragment, recentFragment;
     Button btPlay, btNext, btPrevious;
     TextView tvNameSong, tvArtist;
     ImageView imgSong;
@@ -67,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_favorite:
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, favoriteFragment).commit();
                     break;
+                case R.id.navigation_recent:
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recentFragment).commit();
+                    break;
             }
             return true;
         }
@@ -75,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     void createFragment() {
         homeFragment = new FragmentHome();
         favoriteFragment = new FragmentFavorite();
+        recentFragment = new FragmentRecent();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -91,10 +87,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
-        if (isMyServiceRunning(MusicService.class)){
-            Intent it = new Intent(MainActivity.this, MusicService.class);
-            bindService(it, serviceConnection, 0);
+        if (isMyServiceRunning(MusicService.class)) {
+            connectService();
         } else {
+            startService();
             connectService();
         }
     }
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkService){
+        if (checkService) {
             update();
         }
     }
@@ -213,20 +209,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void connectService() {
+    public void startService() {
         Intent it = new Intent(MainActivity.this, MusicService.class);
-        bindService(it, serviceConnection, BIND_AUTO_CREATE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(it);
+        }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 0){
-//            update();
-//        }
-//    }
+    public void connectService() {
+        Intent it = new Intent(MainActivity.this, MusicService.class);
+        bindService(it, serviceConnection, 0);
+    }
 
-    public void update(){
+    public void update() {
         if (musicService.isMusicPlay()) {
             tvNameSong.setText(musicService.getNameSong());
             tvArtist.setText(musicService.getArtist());
