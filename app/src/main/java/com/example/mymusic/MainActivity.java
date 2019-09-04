@@ -2,7 +2,9 @@ package com.example.mymusic;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -75,13 +77,25 @@ public class MainActivity extends AppCompatActivity {
         favoriteFragment = new FragmentFavorite();
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        if (checkService){
-            connectService();
+        Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
+        if (isMyServiceRunning(MusicService.class)){
+            Intent it = new Intent(MainActivity.this, MusicService.class);
+            bindService(it, serviceConnection, 0);
         } else {
-
+            connectService();
         }
     }
 
