@@ -37,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            update();
+            musicService.listenner = new MusicService.IListenner() {
+                @Override
+                public void onItemClick() {
+                    update();
+                }
+            };
             checkService = true;
         }
 
@@ -96,14 +101,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (checkService) {
-            update();
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -128,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
                         musicService.play();
                         imgSong.startAnimation(animation);
                     }
-                    update();
                 }
             }
         });
@@ -139,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 if (musicService.isMusicPlay()) {
                     musicService.nextSong();
                 }
-                update();
             }
         });
 
@@ -149,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 if (musicService.isMusicPlay()) {
                     musicService.previousSong();
                 }
-                update();
             }
         });
 
@@ -231,5 +225,11 @@ public class MainActivity extends AppCompatActivity {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(serviceConnection);
     }
 }

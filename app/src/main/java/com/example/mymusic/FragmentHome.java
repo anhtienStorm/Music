@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.LayoutInflater;
@@ -49,8 +50,8 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        connectService();
         Music music = new Music(getActivity());
+        connectService();
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         SongListAdapter adapter = new SongListAdapter(music.getListSong(), getActivity());
         recyclerView.setAdapter(adapter);
@@ -73,8 +74,21 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
         }
     }
 
+    public void createService(){
+        Intent it = new Intent(getActivity(), MusicService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getActivity().startForegroundService(it);
+        }
+    }
+
     public void connectService() {
         Intent it = new Intent(getActivity(), MusicService.class);
         getActivity().bindService(it, serviceConnection, 0);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        getActivity().unbindService(serviceConnection);
     }
 }
