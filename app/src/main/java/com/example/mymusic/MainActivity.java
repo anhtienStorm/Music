@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
+            update();
             musicService.listenner = new MusicService.IListenner() {
                 @Override
                 public void onItemClick() {

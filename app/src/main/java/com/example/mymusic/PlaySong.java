@@ -36,6 +36,12 @@ public class PlaySong extends AppCompatActivity {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
             update();
+            musicService.listenner = new MusicService.IListenner() {
+                @Override
+                public void onItemClick() {
+                    update();
+                }
+            };
         }
 
         @Override
@@ -70,7 +76,6 @@ public class PlaySong extends AppCompatActivity {
                         imgSong.startAnimation(animation);
                     }
                 }
-                update();
             }
         });
 
@@ -80,7 +85,6 @@ public class PlaySong extends AppCompatActivity {
                 if (musicService.isMusicPlay()) {
                     musicService.nextSong();
                 }
-                update();
             }
         });
 
@@ -90,7 +94,6 @@ public class PlaySong extends AppCompatActivity {
                 if (musicService.isMusicPlay()) {
                     musicService.previousSong();
                 }
-                update();
             }
         });
 
