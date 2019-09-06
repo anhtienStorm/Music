@@ -36,12 +36,12 @@ public class PlaySong extends AppCompatActivity {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
             update();
-            musicService.listenner = new MusicService.IListenner() {
+            musicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
-                public void onItemClick() {
+                public void onSelect() {
                     update();
                 }
-            };
+            });
         }
 
         @Override

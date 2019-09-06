@@ -27,19 +27,34 @@ public class MusicService extends Service {
     private ArrayList<Song> listSong;
     private Music music;
     private int position;
-    IListenner listenner;
+    private IListenner listenner;
 
     @Override
     public void onCreate() {
         super.onCreate();
         music = new Music(getApplicationContext());
         listSong = music.getListSong();
-        Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel musicServiceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Music Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            musicServiceChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(musicServiceChannel);
+        }
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+        Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -59,6 +74,9 @@ public class MusicService extends Service {
                         play();
                     }
                     break;
+                case "Next":
+                    nextSong();
+                    break;
             }
         }
         showNotification();
@@ -71,25 +89,23 @@ public class MusicService extends Service {
 
         Intent previousIntent = new Intent(this,MusicService.class);
         previousIntent.setAction("Previous");
-        PendingIntent previousPendingIntent = PendingIntent.getActivity(this,0,previousIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent previousPendingIntent = null;
 
         Intent playIntent = new Intent(this,MusicService.class);
         playIntent.setAction("Play");
-        PendingIntent playPendingIntent = PendingIntent.getActivity(this,0,playIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent playPendingIntent = null;
 
-        Bitmap largeImage = BitmapFactory.decodeResource(getResources(),R.drawable.icon_disk);
+        Intent nextIntent = new Intent(this,MusicService.class);
+        nextIntent.setAction("Next");
+        PendingIntent nextIntentIntent = null;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel musicServiceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Music Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            musicServiceChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(musicServiceChannel);
+            previousPendingIntent = PendingIntent.getForegroundService(this,0,previousIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            playPendingIntent = PendingIntent.getForegroundService(this,0,playIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            nextIntentIntent = PendingIntent.getForegroundService(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         }
+
+        Bitmap largeImage = BitmapFactory.decodeResource(getResources(),R.drawable.icon_disk);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_disk)
@@ -98,7 +114,7 @@ public class MusicService extends Service {
                 .setLargeIcon(largeImage)
                 .addAction(R.drawable.ic_skip_previous_black_24dp, "previous",previousPendingIntent)
                 .addAction(isMusicPlay()?isPlaying()?R.drawable.ic_pause_black_24dp:R.drawable.ic_play_black_24dp:R.drawable.ic_play_black_24dp, "play", playPendingIntent)
-                .addAction(R.drawable.ic_skip_next_black_24dp, "next", null)
+                .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextIntentIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(pendingIntent)
@@ -141,13 +157,13 @@ public class MusicService extends Service {
     public void play() {
         mediaPlayer.start();
         showNotification();
-        listenner.onItemClick();
+        listenner.onSelect();
     }
 
     public void pause() {
         mediaPlayer.pause();
         showNotification();
-        listenner.onItemClick();
+        listenner.onSelect();
     }
 
     public void playSong(int position) {
@@ -162,7 +178,7 @@ public class MusicService extends Service {
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
         showNotification();
-        listenner.onItemClick();
+        listenner.onSelect();
     }
 
     public void nextSong() {
@@ -182,7 +198,7 @@ public class MusicService extends Service {
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
             showNotification();
-            listenner.onItemClick();
+            listenner.onSelect();
         }
     }
 
@@ -203,7 +219,7 @@ public class MusicService extends Service {
             mediaPlayer.setLooping(true);
             mediaPlayer.start();
             showNotification();
-            listenner.onItemClick();
+            listenner.onSelect();
         }
     }
 
@@ -236,6 +252,6 @@ public class MusicService extends Service {
     }
 
     interface IListenner{
-        void onItemClick();
+        void onSelect();
     }
 }
