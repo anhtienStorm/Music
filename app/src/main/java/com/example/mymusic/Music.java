@@ -31,14 +31,16 @@ public class Music {
             int indexTitleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int indexDataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             int indexArtistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            int indexAlbumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            //int indexAlbumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
+            int indexAlbumIDColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
             do {
                 i++;
                 String title = musicCursor.getString(indexTitleColumn);
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
-                String album = musicCursor.getString(indexAlbumColumn);
-                Song song = new Song(i, title, data, artist, album);
+                //String album = musicCursor.getString(indexAlbumColumn);
+                int albumID = Integer.parseInt(musicCursor.getString(indexAlbumIDColumn));
+                Song song = new Song(i, title, data, artist, albumID);
                 listSong.add(song);
             } while (musicCursor.moveToNext());
             musicCursor.close();

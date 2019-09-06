@@ -11,14 +11,14 @@ public class Song {
     private String nameSong;
     private String dataSong;
     private String singer;
-    private String albumName;
+    private int albumID;
 
-    public Song(int id, String nameSong, String dataSong, String singer, String albumName) {
+    public Song(int id, String nameSong, String dataSong, String singer, int albumID) {
         this.id = id;
         this.nameSong = nameSong;
         this.dataSong = dataSong;
         this.singer = singer;
-        this.albumName = albumName;
+        this.albumID = albumID;
     }
 
     public int getId() {
@@ -37,8 +37,8 @@ public class Song {
         return singer;
     }
 
-    public String getAlbumName() {
-        return albumName;
+    public int getAlbumID() {
+        return albumID;
     }
 
     public void setId(int id) {

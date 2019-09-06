@@ -25,20 +25,17 @@ public class MusicService extends Service {
     private MediaPlayer mediaPlayer = null;
     private final Binder mBinder = new MusicServiceBinder();
     private ArrayList<Song> listSong;
-    private Music music;
     private int position;
     private IListenner listenner;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        music = new Music(getApplicationContext());
-        listSong = music.getListSong();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationChannel musicServiceChannel = new NotificationChannel(
                     CHANNEL_ID,
                     "Music Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
             musicServiceChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -79,7 +76,6 @@ public class MusicService extends Service {
                     break;
             }
         }
-        showNotification();
         return START_NOT_STICKY;
     }
 
@@ -97,12 +93,12 @@ public class MusicService extends Service {
 
         Intent nextIntent = new Intent(this,MusicService.class);
         nextIntent.setAction("Next");
-        PendingIntent nextIntentIntent = null;
+        PendingIntent nextPendingIntent = null;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             previousPendingIntent = PendingIntent.getForegroundService(this,0,previousIntent,PendingIntent.FLAG_UPDATE_CURRENT);
             playPendingIntent = PendingIntent.getForegroundService(this,0,playIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-            nextIntentIntent = PendingIntent.getForegroundService(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            nextPendingIntent = PendingIntent.getForegroundService(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
         Bitmap largeImage = BitmapFactory.decodeResource(getResources(),R.drawable.icon_disk);
@@ -114,7 +110,7 @@ public class MusicService extends Service {
                 .setLargeIcon(largeImage)
                 .addAction(R.drawable.ic_skip_previous_black_24dp, "previous",previousPendingIntent)
                 .addAction(isMusicPlay()?isPlaying()?R.drawable.ic_pause_black_24dp:R.drawable.ic_play_black_24dp:R.drawable.ic_play_black_24dp, "play", playPendingIntent)
-                .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextIntentIntent)
+                .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0,1,2))
                 .setContentIntent(pendingIntent)
@@ -166,7 +162,8 @@ public class MusicService extends Service {
         listenner.onSelect();
     }
 
-    public void playSong(int position) {
+    public void playSong(ArrayList<Song> listSong,int position) {
+        this.listSong = listSong;
         this.position = position;
         Uri uri = Uri.parse(listSong.get(position).getDataSong());
         if (mediaPlayer != null) {
@@ -240,17 +237,19 @@ public class MusicService extends Service {
         return mediaPlayer.getCurrentPosition();
     }
 
+    void onChangeStatus(IListenner listenner){
+        this.listenner = listenner;
+    }
+
     // class
     public class MusicServiceBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
+
     }
 
-    void onChangeStatus(IListenner listenner){
-        this.listenner = listenner;
-    }
-
+    //interface
     interface IListenner{
         void onSelect();
     }

@@ -34,6 +34,7 @@ import static android.content.Context.BIND_AUTO_CREATE;
 public class FragmentHome extends Fragment implements SongListAdapter.ISongListAdapter {
 
     MusicService musicService;
+    Music music;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -50,7 +51,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        Music music = new Music(getActivity());
+        music = new Music(getActivity());
         connectService();
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         SongListAdapter adapter = new SongListAdapter(music.getListSong(), getActivity());
@@ -63,15 +64,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
 
     @Override
     public void onItemClick(int position) {
-        musicService.playSong(position);
-        if (musicService.isMusicPlay()) {
-            TextView tvNameSong = getActivity().findViewById(R.id.nameSong);
-            TextView tvArtist = getActivity().findViewById(R.id.artist);
-            Button btPlay = getActivity().findViewById(R.id.btMainPlay);
-            tvNameSong.setText(musicService.getNameSong());
-            tvArtist.setText(musicService.getArtist());
-            btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
-        }
+        musicService.playSong(music.getListSong(),position);
     }
 
     public void createService(){

@@ -55,8 +55,8 @@ public class FragmentFavorite extends Fragment {
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
                 String album = musicCursor.getString(indexAlbumColumn);
-                Song song = new Song(i, title, data, artist, album);
-                listSong.add(song);
+                //Song song = new Song(i, title, data, artist, album);
+                //listSong.add(song);
             } while (musicCursor.moveToNext());
             musicCursor.close();
         }
