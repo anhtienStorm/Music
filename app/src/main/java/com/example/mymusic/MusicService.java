@@ -130,8 +130,9 @@ public class MusicService extends Service {
 
     // method
     public boolean isMusicPlay() {
-        if (mediaPlayer != null)
+        if (mediaPlayer != null){
             return true;
+        }
         return false;
     }
 

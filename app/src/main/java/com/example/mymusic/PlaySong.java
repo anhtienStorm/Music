@@ -29,23 +29,25 @@ public class PlaySong extends AppCompatActivity {
     ImageView imgSong;
     SeekBar seekBar;
     MusicService musicService;
+    boolean checkService = false;
     Animation animation;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
-            update();
             musicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
-                public void onSelect() {
+                public void onItemClick() {
                     update();
                 }
             });
+            checkService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
+            checkService = false;
         }
     };
 
@@ -54,6 +56,9 @@ public class PlaySong extends AppCompatActivity {
         super.onStart();
         Intent it = new Intent(this, MusicService.class);
         bindService(it, serviceConnection, 0);
+        if (checkService){
+            update();
+        }
     }
 
     @Override
