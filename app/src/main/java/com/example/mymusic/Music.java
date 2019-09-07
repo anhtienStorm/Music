@@ -10,15 +10,15 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 
 public class Music {
-    Context context;
+    Context mContext;
 
     public Music(Context context){
-        this.context = context;
+        this.mContext = context;
     }
 
     public ArrayList<Song> getListSong(){
         ArrayList<Song> listSong = new ArrayList<>();
-        ContentResolver contentResolver = context.getContentResolver();
+        ContentResolver contentResolver = mContext.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = null;
 

@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 
@@ -28,27 +25,27 @@ public class PlaySong extends AppCompatActivity {
     TextView tvNameSong, tvTotalTime, tvTimeSong;
     ImageView imgSong;
     SeekBar seekBar;
-    MusicService musicService;
-    boolean checkService = false;
-    Animation animation;
-    ServiceConnection serviceConnection = new ServiceConnection() {
+    MusicService mMusicService;
+    boolean mCheckService = false;
+    Animation mAnimation;
+    ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
-            musicService = musicServiceBinder.getService();
+            mMusicService = musicServiceBinder.getService();
             update();
-            musicService.onChangeStatus(new MusicService.IListenner() {
+            mMusicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
                 public void onSelect() {
                     update();
                 }
             });
-            checkService = true;
+            mCheckService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            checkService = false;
+            mCheckService = false;
         }
     };
 
@@ -56,10 +53,10 @@ public class PlaySong extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Intent it = new Intent(this, MusicService.class);
-        bindService(it, serviceConnection, 0);
-        if (checkService){
+        bindService(it, mServiceConnection, 0);
+        if (mCheckService){
             update();
-            musicService.onChangeStatus(new MusicService.IListenner() {
+            mMusicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
                 public void onSelect() {
                     update();
@@ -74,18 +71,16 @@ public class PlaySong extends AppCompatActivity {
         setContentView(R.layout.activity_play_song);
 
         initView();
-        animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disk_rotate);
+        mAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.disk_rotate);
 
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    if (musicService.isPlaying()) {
-                        musicService.pause();
-                        imgSong.clearAnimation();
-                    } else if (!musicService.isPlaying()) {
-                        musicService.play();
-                        imgSong.startAnimation(animation);
+                if (mMusicService.isMusicPlay()) {
+                    if (mMusicService.isPlaying()) {
+                        mMusicService.pause();
+                    } else if (!mMusicService.isPlaying()) {
+                        mMusicService.play();
                     }
                 }
             }
@@ -94,8 +89,8 @@ public class PlaySong extends AppCompatActivity {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    musicService.nextSong();
+                if (mMusicService.isMusicPlay()) {
+                    mMusicService.nextSong();
                 }
             }
         });
@@ -103,8 +98,8 @@ public class PlaySong extends AppCompatActivity {
         btPrevious.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    musicService.previousSong();
+                if (mMusicService.isMusicPlay()) {
+                    mMusicService.previousSong();
                 }
             }
         });
@@ -112,14 +107,14 @@ public class PlaySong extends AppCompatActivity {
         btLoop.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicService.loopSong();
+                mMusicService.loopSong();
             }
         });
 
         btShuffle.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                musicService.shuffleSong();
+                mMusicService.shuffleSong();
             }
         });
 
@@ -136,10 +131,23 @@ public class PlaySong extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                musicService.setSeekTo(seekBar.getProgress());
+                mMusicService.setSeekTo(seekBar.getProgress());
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mServiceConnection);
+    }
+
+    public void startService(){
+        Intent it = new Intent(this, MusicService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(it);
+        }
     }
 
     public void initView() {
@@ -155,39 +163,33 @@ public class PlaySong extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBarSong);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(serviceConnection);
-    }
-
     public void updateTimeSong() {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
-                tvTimeSong.setText(formatTimeSong.format(musicService.getCurrentDuration()));
-                seekBar.setProgress(musicService.getCurrentDuration());
+                tvTimeSong.setText(formatTimeSong.format(mMusicService.getCurrentDuration()));
+                seekBar.setProgress(mMusicService.getCurrentDuration());
                 handler.postDelayed(this, 100);
             }
         }, 100);
     }
 
     public void update(){
-        if (musicService.isMusicPlay()) {
-            tvNameSong.setText(musicService.getNameSong());
-            tvTotalTime.setText(musicService.getTotalTime());
-            seekBar.setMax(musicService.getDuration());
+        if (mMusicService.isMusicPlay()) {
+            tvNameSong.setText(mMusicService.getNameSong());
+            tvTotalTime.setText(mMusicService.getTotalTime());
+            seekBar.setMax(mMusicService.getDuration());
             updateTimeSong();
-            if (musicService.isPlaying()) {
+            if (mMusicService.isPlaying()) {
                 btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
             } else {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
         }
-        int loop = musicService.getStatusLoop();
-        int shuffle = musicService.getShuffle();
+        int loop = mMusicService.getmStatusLoop();
+        int shuffle = mMusicService.getmShuffle();
         if (loop==0){
             btLoop.setBackgroundResource(R.drawable.ic_repeat_black_24dp);
         } else if (loop==1){

@@ -18,17 +18,18 @@ import androidx.core.app.NotificationCompat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class MusicService extends Service {
     public static final String CHANNEL_ID = "MusicServiceChannel";
-    private MediaPlayer mediaPlayer = null;
+    private MediaPlayer mMediaPlayer = null;
     private final Binder mBinder = new MusicServiceBinder();
-    private ArrayList<Song> listSong;
-    private int position;
+    private ArrayList<Song> mListSong;
+    private int mPosition;
     private IListenner listenner;
-    private int statusLoop = 0;
-    private int shuffle = 0;
+    private int mStatusLoop = 0;
+    private int mShuffle = 0;
 
     @Override
     public void onCreate() {
@@ -52,6 +53,8 @@ public class MusicService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        showToast(intent.getAction());
 
         if (isMusicPlay()) {
             switch (intent.getAction()) {
@@ -124,163 +127,169 @@ public class MusicService extends Service {
 
     // method
     public boolean isMusicPlay() {
-        if (mediaPlayer != null) {
+        if (mMediaPlayer != null) {
             return true;
         }
         return false;
     }
 
     public String getNameSong() {
-        return listSong.get(position).getNameSong();
+        return mListSong.get(mPosition).getNameSong();
     }
 
     public String getArtist() {
-        return listSong.get(position).getSinger();
+        return mListSong.get(mPosition).getSinger();
     }
 
-    public int getStatusLoop() {
-        return statusLoop;
+    public int getmStatusLoop() {
+        return mStatusLoop;
     }
 
-    public int getShuffle() {
-        return shuffle;
+    public int getmShuffle() {
+        return mShuffle;
     }
 
     public boolean isPlaying() {
-        if (mediaPlayer.isPlaying())
+        if (mMediaPlayer.isPlaying())
             return true;
         else
             return false;
     }
 
     public void play() {
-        mediaPlayer.start();
+        mMediaPlayer.start();
         showNotification();
         listenner.onSelect();
     }
 
     public void pause() {
-        mediaPlayer.pause();
+        mMediaPlayer.pause();
         showNotification();
         listenner.onSelect();
     }
 
     public void stop() {
-        mediaPlayer.stop();
+        mMediaPlayer.stop();
         showNotification();
         listenner.onSelect();
     }
 
-    public void playSong(ArrayList<Song> listSong, int position) {
-        this.listSong = listSong;
-        this.position = position;
-        Uri uri = Uri.parse(listSong.get(position).getDataSong());
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+    private void preparePlay() {
+        Uri uri = Uri.parse(mListSong.get(mPosition).getDataSong());
+        if (mMediaPlayer != null) {
+            if (mMediaPlayer.isPlaying()) {
+                mMediaPlayer.stop();
             }
         }
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-        mediaPlayer.start();
+
+        mMediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
+        mMediaPlayer.start();
         showNotification();
         listenner.onSelect();
-    }
 
-    public void nextSong() {
-        if (isMusicPlay()) {
-            if (position == listSong.size() - 1) {
-                position = 0;
-            } else {
-                position += 1;
-            }
-            Uri uri = Uri.parse(listSong.get(position).getDataSong());
-            if (mediaPlayer != null) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
-            }
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
-            showNotification();
-            listenner.onSelect();
-        }
-    }
-
-    public void previousSong() {
-        if (isMusicPlay()) {
-            if (position == 0) {
-                position = listSong.size() - 1;
-            } else {
-                position -= 1;
-            }
-            Uri uri = Uri.parse(listSong.get(position).getDataSong());
-            if (mediaPlayer != null) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.stop();
-                }
-            }
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
-            showNotification();
-            listenner.onSelect();
-        }
-    }
-
-    public void shuffleSong() {
-        if (shuffle == 0) {
-            shuffle = 1;
-        } else {
-            shuffle = 0;
-        }
-        listenner.onSelect();
-    }
-
-    public void loopSong() {
-        if (statusLoop == 0) {
-            statusLoop = 1;
-        } else if (statusLoop == 1) {
-            statusLoop = 2;
-        } else if (statusLoop == 2) {
-            statusLoop = 0;
-        }
-        listenner.onSelect();
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                if (statusLoop == 0) {
-                    //mediaPlayer.setLooping(false);
+                if (mStatusLoop == 0) {
                     stop();
-                } else if (statusLoop == 1) {
-                    //mediaPlayer.setLooping(false);
+                    playSong(mListSong,mPosition);
+                    pause();
+                } else if (mStatusLoop == 1) {
                     nextSong();
                 } else {
-                    playSong(listSong, position);
+                    playSong(mListSong, mPosition);
                 }
             }
         });
     }
 
+    public void playSong(final ArrayList<Song> listSong, final int position) {
+        this.mListSong = listSong;
+        this.mPosition = position;
+        preparePlay();
+    }
+
+    public void nextSong() {
+        if (isMusicPlay()) {
+            if (mShuffle == 0){
+                if (mPosition == mListSong.size() - 1) {
+                    mPosition = 0;
+                } else {
+                    mPosition += 1;
+                }
+            } else {
+                Random rd = new Random();
+                mPosition = rd.nextInt(mListSong.size());
+            }
+            preparePlay();
+        }
+    }
+
+    public void previousSong() {
+        if (isMusicPlay()) {
+            if (mShuffle == 0){
+                if (mPosition == 0) {
+                    mPosition = mListSong.size() - 1;
+                } else {
+                    mPosition -= 1;
+                }
+            } else {
+                Random rd = new Random();
+                mPosition = rd.nextInt(mListSong.size());
+            }
+            preparePlay();
+        }
+    }
+
+    public void shuffleSong() {
+        if (mShuffle == 0) {
+            mShuffle = 1;
+            showToast("Shuffle On");
+        } else {
+            mShuffle = 0;
+            showToast("Shuffle Off");
+        }
+        listenner.onSelect();
+    }
+
+    public void loopSong() {
+        if (mStatusLoop == 0) {
+            mStatusLoop = 1;
+            showToast("Loop List");
+        } else if (mStatusLoop == 1) {
+            mStatusLoop = 2;
+            showToast("Loop One");
+        } else if (mStatusLoop == 2) {
+            mStatusLoop = 0;
+            showToast("No Loop");
+        }
+        listenner.onSelect();
+
+    }
+
     public String getTotalTime() {
         SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
-        return formatTimeSong.format(mediaPlayer.getDuration());
+        return formatTimeSong.format(mMediaPlayer.getDuration());
     }
 
     public int getDuration() {
-        return mediaPlayer.getDuration();
+        return mMediaPlayer.getDuration();
     }
 
     public void setSeekTo(int seekProgress) {
-        mediaPlayer.seekTo(seekProgress);
+        mMediaPlayer.seekTo(seekProgress);
     }
 
     public int getCurrentDuration() {
-        return mediaPlayer.getCurrentPosition();
+        return mMediaPlayer.getCurrentPosition();
     }
 
     void onChangeStatus(IListenner listenner) {
         this.listenner = listenner;
+    }
+
+    void showToast(String message){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     // class

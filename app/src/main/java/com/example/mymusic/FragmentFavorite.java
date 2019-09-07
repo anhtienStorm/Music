@@ -2,6 +2,9 @@ package com.example.mymusic;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,16 +33,14 @@ public class FragmentFavorite extends Fragment {
         return view;
     }
 
-    public String getRealPathFromURI(Uri contentUri) {
-        String res = null;
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getActivity().getContentResolver().query(contentUri, proj, null, null, null);
-        if(cursor.moveToFirst()){;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            res = cursor.getString(column_index);
-        }
-        cursor.close();
-        return res;
+    public Bitmap getAlbumArt(String path){
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(path);
+        byte[] data = mediaMetadataRetriever.getEmbeddedPicture();
+        if (data!=null)
+            return BitmapFactory.decodeByteArray(data, 0, data.length);
+        else
+            return null;
     }
 
     public void getImageMusic(){
@@ -70,7 +71,7 @@ public class FragmentFavorite extends Fragment {
                 String artist = musicCursor.getString(indexArtistColumn);
                 String album = musicCursor.getString(indexAlbumColumn);
                 //Song song = new Song(i, title, data, artist, album);
-                //listSong.add(song);
+                //mListSong.add(song);
             } while (musicCursor.moveToNext());
             musicCursor.close();
         }

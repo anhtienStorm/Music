@@ -25,31 +25,31 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    Fragment homeFragment, favoriteFragment, recentFragment;
+    Fragment mFragmentSelected, homeFragment, favoriteFragment, recentFragment;
     Button btPlay, btNext, btPrevious;
     TextView tvNameSong, tvArtist;
     ImageView imgSong;
-    MusicService musicService;
-    boolean checkService = false;
-    Animation animation;
-    ServiceConnection serviceConnection = new ServiceConnection() {
+    MusicService mMusicService;
+    boolean mCheckService = false;
+    Animation mAnimation;
+    ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
-            musicService = musicServiceBinder.getService();
+            mMusicService = musicServiceBinder.getService();
             update();
-            musicService.onChangeStatus(new MusicService.IListenner() {
+            mMusicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
                 public void onSelect() {
                     update();
                 }
             });
-            checkService = true;
+            mCheckService = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            checkService = false;
+            mCheckService = false;
         }
     };
 
@@ -60,13 +60,16 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+                    mFragmentSelected = homeFragment;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFragmentSelected).commit();
                     break;
                 case R.id.navigation_favorite:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, favoriteFragment).commit();
+                    mFragmentSelected = favoriteFragment;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFragmentSelected).commit();
                     break;
                 case R.id.navigation_recent:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, recentFragment).commit();
+                    mFragmentSelected = recentFragment;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, mFragmentSelected).commit();
                     break;
             }
             return true;
@@ -108,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         initPermission();   // xin cap quyen runtime
         createFragment();   // khoi tao cac fragment
-        animation = AnimationUtils.loadAnimation(this, R.anim.disk_rotate);
+        mAnimation = AnimationUtils.loadAnimation(this, R.anim.disk_rotate);
         initView();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
@@ -118,13 +121,11 @@ public class MainActivity extends AppCompatActivity {
         btPlay.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    if (musicService.isPlaying()) {
-                        musicService.pause();
-                        imgSong.clearAnimation();
-                    } else if (!musicService.isPlaying()) {
-                        musicService.play();
-                        imgSong.startAnimation(animation);
+                if (mMusicService.isMusicPlay()) {
+                    if (mMusicService.isPlaying()) {
+                        mMusicService.pause();
+                    } else if (!mMusicService.isPlaying()) {
+                        mMusicService.play();
                     }
                 }
             }
@@ -133,8 +134,8 @@ public class MainActivity extends AppCompatActivity {
         btNext.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    musicService.nextSong();
+                if (mMusicService.isMusicPlay()) {
+                    mMusicService.nextSong();
                 }
             }
         });
@@ -142,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
         btPrevious.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (musicService.isMusicPlay()) {
-                    musicService.previousSong();
+                if (mMusicService.isMusicPlay()) {
+                    mMusicService.previousSong();
                 }
             }
         });
@@ -153,9 +154,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (checkService){
+        if (mCheckService){
             update();
-            musicService.onChangeStatus(new MusicService.IListenner() {
+            mMusicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
                 public void onSelect() {
                     update();
@@ -226,14 +227,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void connectService() {
         Intent it = new Intent(MainActivity.this, MusicService.class);
-        bindService(it, serviceConnection, 0);
+        bindService(it, mServiceConnection, 0);
     }
 
     public void update() {
-        if (musicService.isMusicPlay()) {
-            tvNameSong.setText(musicService.getNameSong());
-            tvArtist.setText(musicService.getArtist());
-            if (musicService.isPlaying()) {
+        if (mMusicService.isMusicPlay()) {
+            tvNameSong.setText(mMusicService.getNameSong());
+            tvArtist.setText(mMusicService.getArtist());
+            if (mMusicService.isPlaying()) {
                 btPlay.setBackgroundResource(R.drawable.ic_pause_black_24dp);
             } else {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
@@ -244,6 +245,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(serviceConnection);
+        unbindService(mServiceConnection);
     }
 }
