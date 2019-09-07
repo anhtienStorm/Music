@@ -60,13 +60,12 @@ public class FragmentFavorite extends Fragment {
             int indexDataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             int indexArtistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int indexAlbumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            int indexImageColumn = musicCursor.getColumnIndex(MediaStore.Images.Media.DATA);
+            //int indexImageColumn = musicCursor.getColumnIndex(MediaStore.Images.Media.DATA);
             do {
                 i++;
-                String image = musicCursor.getString(indexImageColumn);
-                Log.d("anhtien", image);
+                //String image = musicCursor.getString(indexImageColumn);
+                //Log.d("anhtien", image);
                 String title = musicCursor.getString(indexTitleColumn);
-                Log.d("anhtien", title);
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
                 String album = musicCursor.getString(indexAlbumColumn);
