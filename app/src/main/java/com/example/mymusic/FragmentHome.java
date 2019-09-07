@@ -35,6 +35,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
 
     MusicService musicService;
     Music music;
+    ArrayList<Song> listSong;
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -52,9 +53,10 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         music = new Music(getActivity());
+        listSong = music.getListSong();
         connectService();
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
-        SongListAdapter adapter = new SongListAdapter(music.getListSong(), getActivity());
+        SongListAdapter adapter = new SongListAdapter(listSong, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -64,15 +66,15 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
 
     @Override
     public void onItemClick(int position) {
-        musicService.playSong(music.getListSong(),position);
+        musicService.playSong(listSong,position);
     }
 
-    public void createService(){
-        Intent it = new Intent(getActivity(), MusicService.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getActivity().startForegroundService(it);
-        }
-    }
+//    public void createService(){
+//        Intent it = new Intent(getActivity(), MusicService.class);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            getActivity().startForegroundService(it);
+//        }
+//    }
 
     public void connectService() {
         Intent it = new Intent(getActivity(), MusicService.class);

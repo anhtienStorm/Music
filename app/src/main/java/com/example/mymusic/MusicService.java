@@ -27,6 +27,8 @@ public class MusicService extends Service {
     private ArrayList<Song> listSong;
     private int position;
     private IListenner listenner;
+    private int statusLoop = 0;
+    private int shuffle = 0;
 
     @Override
     public void onCreate() {
@@ -49,23 +51,15 @@ public class MusicService extends Service {
     }
 
     @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-        Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
-
-        if (isMusicPlay()){
+        if (isMusicPlay()) {
             switch (intent.getAction()) {
                 case "Previous":
                     previousSong();
                     break;
                 case "Play":
-                    if (isPlaying()){
+                    if (isPlaying()) {
                         pause();
                     } else {
                         play();
@@ -79,43 +73,43 @@ public class MusicService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void showNotification(){
-        Intent notificationIntent = new Intent(this,MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+    public void showNotification() {
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Intent previousIntent = new Intent(this,MusicService.class);
+        Intent previousIntent = new Intent(this, MusicService.class);
         previousIntent.setAction("Previous");
         PendingIntent previousPendingIntent = null;
 
-        Intent playIntent = new Intent(this,MusicService.class);
+        Intent playIntent = new Intent(this, MusicService.class);
         playIntent.setAction("Play");
         PendingIntent playPendingIntent = null;
 
-        Intent nextIntent = new Intent(this,MusicService.class);
+        Intent nextIntent = new Intent(this, MusicService.class);
         nextIntent.setAction("Next");
         PendingIntent nextPendingIntent = null;
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            previousPendingIntent = PendingIntent.getForegroundService(this,0,previousIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-            playPendingIntent = PendingIntent.getForegroundService(this,0,playIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-            nextPendingIntent = PendingIntent.getForegroundService(this,0,nextIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            previousPendingIntent = PendingIntent.getForegroundService(this, 0, previousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            playPendingIntent = PendingIntent.getForegroundService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            nextPendingIntent = PendingIntent.getForegroundService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
-        Bitmap largeImage = BitmapFactory.decodeResource(getResources(),R.drawable.icon_disk);
+        Bitmap largeImage = BitmapFactory.decodeResource(getResources(), R.drawable.icon_disk);
 
-        Notification notification = new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_disk)
-                .setContentTitle(isMusicPlay()?getNameSong():"Name Song")
-                .setContentText(isMusicPlay()?getArtist():"Artist")
+                .setContentTitle(getNameSong())
+                .setContentText(getArtist())
                 .setLargeIcon(largeImage)
-                .addAction(R.drawable.ic_skip_previous_black_24dp, "previous",previousPendingIntent)
-                .addAction(isMusicPlay()?isPlaying()?R.drawable.ic_pause_black_24dp:R.drawable.ic_play_black_24dp:R.drawable.ic_play_black_24dp, "play", playPendingIntent)
+                .addAction(R.drawable.ic_skip_previous_black_24dp, "previous", previousPendingIntent)
+                .addAction(isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp/*:R.drawable.ic_play_black_24dp*/, "play", playPendingIntent)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0,1,2))
+                        .setShowActionsInCompactView(0, 1, 2))
                 .setContentIntent(pendingIntent)
                 .build();
-        startForeground(1,notification);
+        startForeground(1, notification);
     }
 
     @Override
@@ -130,7 +124,7 @@ public class MusicService extends Service {
 
     // method
     public boolean isMusicPlay() {
-        if (mediaPlayer != null){
+        if (mediaPlayer != null) {
             return true;
         }
         return false;
@@ -142,6 +136,14 @@ public class MusicService extends Service {
 
     public String getArtist() {
         return listSong.get(position).getSinger();
+    }
+
+    public int getStatusLoop() {
+        return statusLoop;
+    }
+
+    public int getShuffle() {
+        return shuffle;
     }
 
     public boolean isPlaying() {
@@ -163,7 +165,13 @@ public class MusicService extends Service {
         listenner.onSelect();
     }
 
-    public void playSong(ArrayList<Song> listSong,int position) {
+    public void stop() {
+        mediaPlayer.stop();
+        showNotification();
+        listenner.onSelect();
+    }
+
+    public void playSong(ArrayList<Song> listSong, int position) {
         this.listSong = listSong;
         this.position = position;
         Uri uri = Uri.parse(listSong.get(position).getDataSong());
@@ -173,7 +181,6 @@ public class MusicService extends Service {
             }
         }
         mediaPlayer = MediaPlayer.create(getApplicationContext(), uri);
-        mediaPlayer.setLooping(true);
         mediaPlayer.start();
         showNotification();
         listenner.onSelect();
@@ -221,6 +228,40 @@ public class MusicService extends Service {
         }
     }
 
+    public void shuffleSong() {
+        if (shuffle == 0) {
+            shuffle = 1;
+        } else {
+            shuffle = 0;
+        }
+        listenner.onSelect();
+    }
+
+    public void loopSong() {
+        if (statusLoop == 0) {
+            statusLoop = 1;
+        } else if (statusLoop == 1) {
+            statusLoop = 2;
+        } else if (statusLoop == 2) {
+            statusLoop = 0;
+        }
+        listenner.onSelect();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                if (statusLoop == 0) {
+                    //mediaPlayer.setLooping(false);
+                    stop();
+                } else if (statusLoop == 1) {
+                    //mediaPlayer.setLooping(false);
+                    nextSong();
+                } else {
+                    playSong(listSong, position);
+                }
+            }
+        });
+    }
+
     public String getTotalTime() {
         SimpleDateFormat formatTimeSong = new SimpleDateFormat("mm:ss");
         return formatTimeSong.format(mediaPlayer.getDuration());
@@ -238,7 +279,7 @@ public class MusicService extends Service {
         return mediaPlayer.getCurrentPosition();
     }
 
-    void onChangeStatus(IListenner listenner){
+    void onChangeStatus(IListenner listenner) {
         this.listenner = listenner;
     }
 
@@ -251,7 +292,7 @@ public class MusicService extends Service {
     }
 
     //interface
-    interface IListenner{
+    interface IListenner {
         void onSelect();
     }
 }

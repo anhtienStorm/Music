@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         if (checkService){
             update();
             musicService.onChangeStatus(new MusicService.IListenner() {

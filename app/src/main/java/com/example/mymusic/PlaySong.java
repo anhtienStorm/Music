@@ -36,9 +36,10 @@ public class PlaySong extends AppCompatActivity {
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             MusicService.MusicServiceBinder musicServiceBinder = (MusicService.MusicServiceBinder) iBinder;
             musicService = musicServiceBinder.getService();
+            update();
             musicService.onChangeStatus(new MusicService.IListenner() {
                 @Override
-                public void onItemClick() {
+                public void onSelect() {
                     update();
                 }
             });
@@ -58,6 +59,12 @@ public class PlaySong extends AppCompatActivity {
         bindService(it, serviceConnection, 0);
         if (checkService){
             update();
+            musicService.onChangeStatus(new MusicService.IListenner() {
+                @Override
+                public void onSelect() {
+                    update();
+                }
+            });
         }
     }
 
@@ -99,6 +106,20 @@ public class PlaySong extends AppCompatActivity {
                 if (musicService.isMusicPlay()) {
                     musicService.previousSong();
                 }
+            }
+        });
+
+        btLoop.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                musicService.loopSong();
+            }
+        });
+
+        btShuffle.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                musicService.shuffleSong();
             }
         });
 
@@ -164,6 +185,20 @@ public class PlaySong extends AppCompatActivity {
             } else {
                 btPlay.setBackgroundResource(R.drawable.ic_play_black_24dp);
             }
+        }
+        int loop = musicService.getStatusLoop();
+        int shuffle = musicService.getShuffle();
+        if (loop==0){
+            btLoop.setBackgroundResource(R.drawable.ic_repeat_black_24dp);
+        } else if (loop==1){
+            btLoop.setBackgroundResource(R.drawable.ic_repeat_violet_24dp);
+        } else {
+            btLoop.setBackgroundResource(R.drawable.ic_repeat_one_violet_24dp);
+        }
+        if (shuffle==0){
+            btShuffle.setBackgroundResource(R.drawable.ic_shuffle_black_24dp);
+        } else {
+            btShuffle.setBackgroundResource(R.drawable.ic_shuffle_violet_24dp);
         }
     }
 }
