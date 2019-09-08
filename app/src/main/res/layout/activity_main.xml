@@ -22,34 +22,35 @@
         android:layout_above="@+id/nav_view"
         android:background="@color/cardview_light_background">
 
-        <ImageView
-            android:id="@+id/imgSong"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgMainSong"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/icon_disk"
+            android:src="@drawable/icon_default_song"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/nameSong"/>
+            app:layout_constraintRight_toLeftOf="@+id/tvMainNameSong"/>
 
         <TextView
-            android:id="@+id/nameSong"
+            android:id="@+id/tvMainNameSong"
             android:layout_width="170dp"
             android:layout_height="20dp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/artist"
-            app:layout_constraintLeft_toRightOf="@+id/imgSong"
+            app:layout_constraintBottom_toTopOf="@+id/tvMainArtist"
+            app:layout_constraintLeft_toRightOf="@+id/imgMainSong"
             app:layout_constraintRight_toLeftOf="@+id/btMainPrevious"/>
 
         <TextView
-            android:id="@+id/artist"
+            android:id="@+id/tvMainArtist"
             android:layout_width="170dp"
             android:layout_height="20dp"
-            app:layout_constraintTop_toBottomOf="@+id/nameSong"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/imgSong"
-            app:layout_constraintRight_toLeftOf="@+id/btMainPrevious" />
+            app:layout_constraintHorizontal_bias="0.333"
+            app:layout_constraintLeft_toRightOf="@+id/imgMainSong"
+            app:layout_constraintRight_toLeftOf="@+id/btMainPrevious"
+            app:layout_constraintTop_toBottomOf="@+id/tvMainNameSong" />
 
         <Button
             android:id="@+id/btMainPrevious"
@@ -58,7 +59,7 @@
             android:layout_margin="8dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@+id/nameSong"
+            app:layout_constraintLeft_toRightOf="@+id/tvMainNameSong"
             app:layout_constraintRight_toLeftOf="@+id/btMainPlay"
             android:background="@drawable/ic_skip_previous_black_24dp"/>
 

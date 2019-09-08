@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment mFragmentSelected, homeFragment, favoriteFragment, recentFragment;
     Button btPlay, btNext, btPrevious;
     TextView tvNameSong, tvArtist;
-    ImageView imgSong;
+    ImageView imgMainSong;
     MusicService mMusicService;
     boolean mCheckService = false;
     Animation mAnimation;
@@ -206,9 +206,9 @@ public class MainActivity extends AppCompatActivity {
         btPlay = findViewById(R.id.btMainPlay);
         btNext = findViewById(R.id.btMainNext);
         btPrevious = findViewById(R.id.btMainPrevious);
-        tvNameSong = findViewById(R.id.nameSong);
-        tvArtist = findViewById(R.id.artist);
-        imgSong = findViewById(R.id.imgSong);
+        tvNameSong = findViewById(R.id.tvMainNameSong);
+        tvArtist = findViewById(R.id.tvMainArtist);
+        imgMainSong = findViewById(R.id.imgMainSong);
     }
 
     // chuyen den giao dien phat nhac

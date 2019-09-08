@@ -3,9 +3,13 @@ package com.example.mymusic;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -31,20 +35,30 @@ public class Music {
             int indexTitleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int indexDataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             int indexArtistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-            //int indexAlbumColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM);
-            int indexAlbumIDColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID);
             do {
                 i++;
                 String title = musicCursor.getString(indexTitleColumn);
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
-                //String album = musicCursor.getString(indexAlbumColumn);
-                int albumID = Integer.parseInt(musicCursor.getString(indexAlbumIDColumn));
-                Song song = new Song(i, title, data, artist, albumID);
+                Bitmap bmImage = getAlbumArt(data);
+                Song song = new Song(i, title, data, artist, bmImage);
                 listSong.add(song);
             } while (musicCursor.moveToNext());
             musicCursor.close();
         }
         return listSong;
+    }
+
+    public Bitmap getAlbumArt(String path){
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(path);
+        byte[] data = mediaMetadataRetriever.getEmbeddedPicture();
+//        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//        Bitmap circularBitmap = ImageConventer.getRoundedCornerBitmap(bitmap, 100);
+        if (data!=null)
+//            return circularBitmap;
+            return BitmapFactory.decodeByteArray(data, 0, data.length);
+        else
+            return null;
     }
 }

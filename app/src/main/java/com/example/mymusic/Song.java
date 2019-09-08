@@ -1,5 +1,7 @@
 package com.example.mymusic;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -11,14 +13,14 @@ public class Song {
     private String nameSong;
     private String dataSong;
     private String singer;
-    private int albumID;
+    private Bitmap bmImageSong;
 
-    public Song(int id, String nameSong, String dataSong, String singer, int albumID) {
+    public Song(int id, String nameSong, String dataSong, String singer, Bitmap bmImageSong) {
         this.id = id;
         this.nameSong = nameSong;
         this.dataSong = dataSong;
         this.singer = singer;
-        this.albumID = albumID;
+        this.bmImageSong = bmImageSong;
     }
 
     public int getId() {
@@ -37,8 +39,8 @@ public class Song {
         return singer;
     }
 
-    public int getAlbumID() {
-        return albumID;
+    public Bitmap getBmImageSong() {
+        return bmImageSong;
     }
 
     public void setId(int id) {

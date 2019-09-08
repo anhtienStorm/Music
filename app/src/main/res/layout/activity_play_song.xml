@@ -9,8 +9,8 @@
     <RelativeLayout
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="530dp"
-        app:layout_constraintBottom_toTopOf="@+id/Time"
+        android:layout_height="480dp"
+        app:layout_constraintBottom_toTopOf="@+id/btFavorite"
         app:layout_constraintTop_toTopOf="parent" >
         <TextView
             android:id="@+id/playSong_nameSong"
@@ -28,13 +28,24 @@
             android:src="@drawable/icon_disk" />
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/btFavorite"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_no_favorite_black_24dp"
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        app:layout_constraintBottom_toTopOf="@+id/Time"
+        app:layout_constraintLeft_toRightOf="@+id/btLoop"
+        app:layout_constraintRight_toLeftOf="@+id/btShuffle"
+        />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Time"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btPlay"
-        app:layout_constraintTop_toBottomOf="@+id/view">
+        app:layout_constraintTop_toBottomOf="@+id/btFavorite">
 
         <TextView
             android:id="@+id/tvTimeSong"
@@ -87,7 +98,7 @@
         android:background="@drawable/ic_skip_next_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btPlay"
-        app:layout_constraintRight_toLeftOf="@+id/btShuffle"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Time" />
 
     <Button
@@ -96,7 +107,7 @@
         android:layout_height="50dp"
         android:background="@drawable/ic_skip_previous_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/btLoop"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/btPlay"
         app:layout_constraintTop_toBottomOf="@+id/Time" />
 
@@ -105,18 +116,18 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_repeat_black_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/Time"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/btPrevious"
-        app:layout_constraintTop_toBottomOf="@+id/Time" />
+        app:layout_constraintRight_toLeftOf="@+id/btFavorite"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 
     <Button
         android:id="@+id/btShuffle"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="@drawable/ic_shuffle_black_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/btNext"
+        app:layout_constraintBottom_toTopOf="@+id/Time"
+        app:layout_constraintLeft_toRightOf="@+id/btFavorite"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Time" />
+        app:layout_constraintTop_toBottomOf="@+id/view" />
 </androidx.constraintlayout.widget.ConstraintLayout>
