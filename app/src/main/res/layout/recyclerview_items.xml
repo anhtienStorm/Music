@@ -7,24 +7,23 @@
 
     <ImageView
         android:id="@+id/imgItemSong"
-        android:src="@drawable/icon_default_song"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:padding="4dp"
-        />
+        android:padding="4dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/tvItemNameSong"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginLeft="4dp"
+            android:padding="4dp"
             android:textSize="15dp"
-            android:textStyle="bold"
-            android:padding="4dp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvItemArtist"

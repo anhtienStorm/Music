@@ -16,21 +16,21 @@ import java.util.ArrayList;
 public class Music {
     Context mContext;
 
-    public Music(Context context){
+    public Music(Context context) {
         this.mContext = context;
     }
 
-    public ArrayList<Song> getListSong(){
+    public ArrayList<Song> getListSong() {
         ArrayList<Song> listSong = new ArrayList<>();
         ContentResolver contentResolver = mContext.getContentResolver();
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         Cursor musicCursor = null;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            musicCursor = contentResolver.query(musicUri, null, null, null,null, null);
+            musicCursor = contentResolver.query(musicUri, null, null, null, null, null);
         }
 
-        if (musicCursor != null && musicCursor.moveToFirst()){
+        if (musicCursor != null && musicCursor.moveToFirst()) {
             int i = 0;
             int indexTitleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int indexDataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
@@ -41,6 +41,9 @@ public class Music {
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
                 Bitmap bmImage = getAlbumArt(data);
+                if (bmImage == null) {
+                    bmImage = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.icon_default_song);
+                }
                 Song song = new Song(i, title, data, artist, bmImage);
                 listSong.add(song);
             } while (musicCursor.moveToNext());
@@ -49,16 +52,14 @@ public class Music {
         return listSong;
     }
 
-    public Bitmap getAlbumArt(String path){
+    public Bitmap getAlbumArt(String path) {
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         mediaMetadataRetriever.setDataSource(path);
         byte[] data = mediaMetadataRetriever.getEmbeddedPicture();
-//        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-//        Bitmap circularBitmap = ImageConventer.getRoundedCornerBitmap(bitmap, 100);
-        if (data!=null)
-//            return circularBitmap;
+        if (data != null)
             return BitmapFactory.decodeByteArray(data, 0, data.length);
         else
             return null;
     }
+
 }

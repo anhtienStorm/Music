@@ -178,6 +178,7 @@ public class PlaySong extends AppCompatActivity {
 
     public void update(){
         if (mMusicService.isMusicPlay()) {
+            imgSong.setImageBitmap(mMusicService.getBitmapImage());
             tvNameSong.setText(mMusicService.getNameSong());
             tvTotalTime.setText(mMusicService.getTotalTime());
             seekBar.setMax(mMusicService.getDuration());

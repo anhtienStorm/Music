@@ -98,15 +98,14 @@ public class MusicService extends Service {
             nextPendingIntent = PendingIntent.getForegroundService(this, 0, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
-        Bitmap largeImage = BitmapFactory.decodeResource(getResources(), R.drawable.icon_disk);
-
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.icon_disk)
                 .setContentTitle(getNameSong())
                 .setContentText(getArtist())
-                .setLargeIcon(largeImage)
+                .setLargeIcon(getBitmapImage())
+                .setPriority(2)
                 .addAction(R.drawable.ic_skip_previous_black_24dp, "previous", previousPendingIntent)
-                .addAction(isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp/*:R.drawable.ic_play_black_24dp*/, "play", playPendingIntent)
+                .addAction(isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp, "play", playPendingIntent)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "next", nextPendingIntent)
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(0, 1, 2))
@@ -139,6 +138,10 @@ public class MusicService extends Service {
 
     public String getArtist() {
         return mListSong.get(mPosition).getSinger();
+    }
+
+    public Bitmap getBitmapImage(){
+        return mListSong.get(mPosition).getBmImageSong();
     }
 
     public int getmStatusLoop() {

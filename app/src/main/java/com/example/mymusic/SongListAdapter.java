@@ -16,12 +16,10 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
     private ArrayList<Song> mListSong;
     private Context mContext;
     private ISongListAdapter listenner;
-    //private Music music;
 
     public SongListAdapter(ArrayList<Song> mListSong, Context mContext) {
         this.mListSong = mListSong;
         this.mContext = mContext;
-        //music = new Music(mContext);
     }
 
     @NonNull
@@ -35,7 +33,7 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
         Song song = mListSong.get(position);
         Bitmap imgSong = song.getBmImageSong();
         if (imgSong != null){
-            holder.imgSong.setImageBitmap(song.getBmImageSong());
+            holder.imgSong.setImageBitmap(imgSong);
         }
         holder.tvTitleSong.setText(song.getNameSong());
         holder.tvArtist.setText(song.getSinger());

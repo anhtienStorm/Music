@@ -26,7 +26,7 @@
             android:id="@+id/imgMainSong"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/icon_default_song"
+            android:padding="4dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         initView();
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
+        navView.setSelectedItemId(R.id.navigation_home);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commit();
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -232,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void update() {
         if (mMusicService.isMusicPlay()) {
+            imgMainSong.setImageBitmap(mMusicService.getBitmapImage());
             tvNameSong.setText(mMusicService.getNameSong());
             tvArtist.setText(mMusicService.getArtist());
             if (mMusicService.isPlaying()) {
