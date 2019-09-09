@@ -9,7 +9,6 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -36,7 +35,6 @@ public class Music {
             int indexDataColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.DATA);
             int indexArtistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             do {
-                i++;
                 String title = musicCursor.getString(indexTitleColumn);
                 String data = musicCursor.getString(indexDataColumn);
                 String artist = musicCursor.getString(indexArtistColumn);
@@ -46,6 +44,7 @@ public class Music {
                 }
                 Song song = new Song(i, title, data, artist, bmImage);
                 listSong.add(song);
+                i++;
             } while (musicCursor.moveToNext());
             musicCursor.close();
         }

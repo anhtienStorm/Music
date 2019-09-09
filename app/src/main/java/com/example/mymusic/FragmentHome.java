@@ -3,6 +3,7 @@ package com.example.mymusic;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -83,5 +84,15 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     //interface
 //    interface IHomeFragment{
 //        void onCreateService();
+//    }
+
+    //class
+//    private class AsyncTaskGetListMusic extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//
+//            return null;
+//        }
 //    }
 }

@@ -24,6 +24,7 @@
             android:id="@+id/imgSong"
             android:layout_width="350dp"
             android:layout_height="350dp"
+            android:padding="4dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp" />
     </RelativeLayout>

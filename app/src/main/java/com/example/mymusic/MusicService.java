@@ -99,7 +99,7 @@ public class MusicService extends Service {
         }
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.icon_disk)
+                .setSmallIcon(R.drawable.icon_notification)
                 .setContentTitle(getNameSong())
                 .setContentText(getArtist())
                 .setLargeIcon(getBitmapImage())

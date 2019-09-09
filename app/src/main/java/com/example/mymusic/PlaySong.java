@@ -18,6 +18,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class PlaySong extends AppCompatActivity {
 
@@ -48,6 +49,8 @@ public class PlaySong extends AppCompatActivity {
             mCheckService = false;
         }
     };
+
+
 
     @Override
     protected void onStart() {
