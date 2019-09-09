@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
         if (isMyServiceRunning(MusicService.class)) {
             connectService();
         } else {
@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             connectService();
         }
         mSharedPreferences = getSharedPreferences(sharePrefFile,MODE_PRIVATE);
-        Toast.makeText(this, mSharedPreferences.getInt("ID_Song",0)+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
