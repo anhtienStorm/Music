@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,12 +15,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     MusicService mMusicService;
     boolean mCheckService = false;
     Animation mAnimation;
+    SharedPreferences mSharedPreferences;
+    String sharePrefFile = "SongSharedPreferences";
     ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -95,13 +101,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, String.valueOf(isMyServiceRunning(MusicService.class)), Toast.LENGTH_SHORT).show();
         if (isMyServiceRunning(MusicService.class)) {
             connectService();
         } else {
             startService();
             connectService();
         }
+        mSharedPreferences = getSharedPreferences(sharePrefFile,MODE_PRIVATE);
+        Toast.makeText(this, mSharedPreferences.getInt("ID_Song",0)+"", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -222,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
     public void startService() {
         Intent it = new Intent(MainActivity.this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(it);
+            startService(it);
         }
     }
 

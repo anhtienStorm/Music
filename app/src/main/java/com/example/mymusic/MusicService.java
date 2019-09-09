@@ -6,11 +6,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
 
@@ -30,6 +32,8 @@ public class MusicService extends Service {
     private IListenner listenner;
     private int mStatusLoop = 0;
     private int mShuffle = 0;
+    private SharedPreferences mPreferences;
+    private String sharePrefFile = "SongSharedPreferences";
 
     @Override
     public void onCreate() {
@@ -44,6 +48,7 @@ public class MusicService extends Service {
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(musicServiceChannel);
         }
+        mPreferences = getSharedPreferences(sharePrefFile,MODE_PRIVATE);
     }
 
     @Override
@@ -169,6 +174,9 @@ public class MusicService extends Service {
         mMediaPlayer.pause();
         showNotification();
         listenner.onSelect();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_DETACH);
+        }
     }
 
     public void stop() {
@@ -204,6 +212,10 @@ public class MusicService extends Service {
                 }
             }
         });
+
+        SharedPreferences.Editor prefEditor = mPreferences.edit();
+        prefEditor.putInt("ID_Song",mListSong.get(mPosition).getId());
+        prefEditor.apply();
     }
 
     public void playSong(final ArrayList<Song> listSong, final int position) {
