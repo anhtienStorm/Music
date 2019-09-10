@@ -2,6 +2,7 @@ package com.example.mymusic;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +44,9 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
         if (imgSong != null){
             holder.imgSong.setImageBitmap(imgSong);
         }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            holder.imgSong.setImageDrawable(mContext.getDrawable(R.drawable.icon_default_song));
+//        }
         holder.tvTitleSong.setText(song.getNameSong());
         holder.tvArtist.setText(song.getSinger());
     }

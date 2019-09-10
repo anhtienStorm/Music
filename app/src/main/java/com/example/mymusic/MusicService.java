@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -82,7 +81,7 @@ public class MusicService extends Service {
     }
 
     public void showNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, ActivityMusic.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         Intent previousIntent = new Intent(this, MusicService.class);

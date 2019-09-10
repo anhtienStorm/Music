@@ -1,11 +1,20 @@
 package com.example.mymusic;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +61,8 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+
         mMusic = new Music(getActivity());
         mListSong = mMusic.getListSong();
         connectService();
@@ -65,6 +77,7 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
 
     @Override
     public void onItemClick(int position) {
+        Toast.makeText(getActivity(), position+"", Toast.LENGTH_SHORT).show();
         mMusicService.playSong(mListSong,position);
     }
 
@@ -122,13 +135,4 @@ public class FragmentHome extends Fragment implements SongListAdapter.ISongListA
 //        void onCreateService();
 //    }
 
-    //class
-//    private class AsyncTaskGetListMusic extends AsyncTask<Void, Void, Void> {
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//
-//            return null;
-//        }
-//    }
 }
