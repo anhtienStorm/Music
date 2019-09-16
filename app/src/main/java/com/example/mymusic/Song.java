@@ -13,14 +13,24 @@ public class Song {
     private String nameSong;
     private String dataSong;
     private String singer;
-    private Bitmap bmImageSong;
+//    private Bitmap bmImageSong;
+    private String albumID;
 
-    public Song(int id, String nameSong, String dataSong, String singer, Bitmap bmImageSong) {
+//    public Song(int id, String nameSong, String dataSong, String singer, Bitmap bmImageSong) {
+//        this.id = id;
+//        this.nameSong = nameSong;
+//        this.dataSong = dataSong;
+//        this.singer = singer;
+//        this.bmImageSong = bmImageSong;
+//    }
+
+
+    public Song(int id, String nameSong, String dataSong, String singer, String albumID) {
         this.id = id;
         this.nameSong = nameSong;
         this.dataSong = dataSong;
         this.singer = singer;
-        this.bmImageSong = bmImageSong;
+        this.albumID = albumID;
     }
 
     public int getId() {
@@ -39,8 +49,13 @@ public class Song {
         return singer;
     }
 
-    public Bitmap getBmImageSong() {
-        return bmImageSong;
+//    public Bitmap getBmImageSong() {
+//        return bmImageSong;
+//    }
+
+
+    public String getAlbumID() {
+        return albumID;
     }
 
     public void setId(int id) {

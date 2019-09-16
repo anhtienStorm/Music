@@ -3,8 +3,10 @@ package com.example.mymusic;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -179,7 +183,11 @@ public class PlaySong extends AppCompatActivity {
 
     public void update(){
         if (mMusicService.isMusicPlay()) {
-            imgSong.setImageBitmap(mMusicService.getBitmapImage());
+//            imgSong.setImageBitmap(mMusicService.getBitmapImage());
+            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri uri = ContentUris.withAppendedId(sArtworkUri, Long.parseLong(mMusicService.getAlbumID()));
+            Glide.with(this).load(uri).error(R.drawable.icon_default_song).into(imgSong);
+
             tvNameSong.setText(mMusicService.getNameSong());
             tvTotalTime.setText(mMusicService.getTotalTime());
             seekBar.setMax(mMusicService.getDuration());

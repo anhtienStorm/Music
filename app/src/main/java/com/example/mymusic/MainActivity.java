@@ -3,13 +3,17 @@ package com.example.mymusic;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
@@ -240,7 +244,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void update() {
         if (mMusicService.isMusicPlay()) {
-            imgMainSong.setImageBitmap(mMusicService.getBitmapImage());
+//            imgMainSong.setImageBitmap(mMusicService.getBitmapImage());
+            Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+            Uri uri = ContentUris.withAppendedId(sArtworkUri, Long.parseLong(mMusicService.getAlbumID()));
+            Glide.with(this).load(uri).error(R.drawable.icon_default_song).into(imgMainSong);
+
             tvNameSong.setText(mMusicService.getNameSong());
             tvArtist.setText(mMusicService.getArtist());
             if (mMusicService.isPlaying()) {

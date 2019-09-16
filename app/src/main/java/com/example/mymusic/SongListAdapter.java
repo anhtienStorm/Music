@@ -1,7 +1,10 @@
 package com.example.mymusic;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,10 +46,14 @@ public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.SongVi
     @Override
     public void onBindViewHolder(@NonNull SongViewHolder holder, int position) {
         Song song = mListSong.get(position);
-        Bitmap imgSong = song.getBmImageSong();
-        if (imgSong != null){
-            holder.imgSong.setImageBitmap(imgSong);
-        }
+//        Bitmap imgSong = song.getBmImageSong();
+//        if (imgSong != null){
+//            holder.imgSong.setImageBitmap(imgSong);
+//        }
+        Uri sArtworkUri = Uri.parse("content://media/external/audio/albumart");
+        Uri uri = ContentUris.withAppendedId(sArtworkUri, Long.parseLong(song.getAlbumID()));
+//        Picasso.with(mContext).load(uri).error(R.drawable.icon_default_song).into(holder.imgSong);
+        Glide.with(mContext).load(uri).error(R.drawable.icon_default_song).into(holder.imgSong);
         holder.tvTitleSong.setText(song.getNameSong());
         holder.tvArtist.setText(song.getSinger());
     }

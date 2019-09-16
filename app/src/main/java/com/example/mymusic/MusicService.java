@@ -35,6 +35,8 @@ public class MusicService extends Service {
     private SharedPreferences mPreferences;
     private String sharePrefFile = "SongSharedPreferences";
 
+    private Music mMusic;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,6 +51,8 @@ public class MusicService extends Service {
             manager.createNotificationChannel(musicServiceChannel);
         }
         mPreferences = getSharedPreferences(sharePrefFile,MODE_PRIVATE);
+
+        mMusic = new Music(getApplicationContext());
     }
 
     @Override
@@ -107,7 +111,7 @@ public class MusicService extends Service {
                 .setSmallIcon(R.drawable.icon_notification)
                 .setContentTitle(getNameSong())
                 .setContentText(getArtist())
-                .setLargeIcon(getBitmapImage())
+                .setLargeIcon(mMusic.getAlbumart(Long.valueOf(getAlbumID())))
                 .setPriority(2)
                 .addAction(R.drawable.ic_skip_previous_black_24dp, "previous", previousPendingIntent)
                 .addAction(isPlaying() ? R.drawable.ic_pause_black_24dp : R.drawable.ic_play_black_24dp, "play", playPendingIntent)
@@ -145,8 +149,12 @@ public class MusicService extends Service {
         return mListSong.get(mPosition).getSinger();
     }
 
-    public Bitmap getBitmapImage(){
-        return mListSong.get(mPosition).getBmImageSong();
+//    public Bitmap getBitmapImage(){
+//        return mListSong.get(mPosition).getBmImageSong();
+//    }
+
+    public String getAlbumID(){
+        return mListSong.get(mPosition).getAlbumID();
     }
 
     public int getmStatusLoop() {
