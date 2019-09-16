@@ -19,19 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.os.IBinder;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityMusic extends AppCompatActivity {
 
     Fragment mFragmentSelected, homeFragment, favoriteFragment, recentFragment;
     Button btPlay, btNext, btPrevious;
@@ -185,11 +182,11 @@ public class MainActivity extends AppCompatActivity {
                 //Permisson don't granted
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityMusic.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
                 }
                 // Permisson don't granted and dont show dialog again.
                 else {
-                    Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityMusic.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
                 }
                 //Register permission
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -203,10 +200,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(MainActivity.this, "Quyền đọc file: được phép", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityMusic.this, "Quyền đọc file: được phép", Toast.LENGTH_SHORT).show();
             } else {
 
-                Toast.makeText(MainActivity.this, "Quyền đọc file: không được phép", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ActivityMusic.this, "Quyền đọc file: không được phép", Toast.LENGTH_SHORT).show();
 
             }
         } else {
@@ -225,20 +222,20 @@ public class MainActivity extends AppCompatActivity {
 
     // chuyen den giao dien phat nhac
     public void startPlaySong(View view) {
-        Intent it = new Intent(this, PlaySong.class);
+        Intent it = new Intent(this, MediaPlayBack.class);
         startActivity(it);
 
     }
 
     public void startService() {
-        Intent it = new Intent(MainActivity.this, MusicService.class);
+        Intent it = new Intent(ActivityMusic.this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startService(it);
         }
     }
 
     public void connectService() {
-        Intent it = new Intent(MainActivity.this, MusicService.class);
+        Intent it = new Intent(ActivityMusic.this, MusicService.class);
         bindService(it, mServiceConnection, 0);
     }
 
